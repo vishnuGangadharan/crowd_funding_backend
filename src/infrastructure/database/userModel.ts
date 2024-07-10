@@ -6,9 +6,10 @@ const userSchema:Schema = new Schema<User | Document>({
     email: {type: String, required: true},
     phone: {type: String, required: true},
     password: {type: String, required: true},
-    isBlocked: {type: Boolean, required: true},
-    isAdmin: {type: Boolean, required: true},
-    isGoogle: {type: Boolean, required: true},
+    isVerified:{type:Boolean, default:false},
+    isBlocked: {type: Boolean, default: false},
+    isAdmin: {type: Boolean, default: false},
+    isGoogle: {type: Boolean, default: false},
 });
 
 const UserModel:Model<User&Document>=mongoose.model<User & Document>("User", userSchema);

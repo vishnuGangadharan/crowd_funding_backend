@@ -8,8 +8,6 @@ class SendOtp implements Nodemailer {
     private transporter: nodemailer.Transporter  
     
     constructor(){
-          console.log('userNNN',process.env.USER);
-          console.log('PASS',process.env.PASS);
 
         this.transporter = nodemailer.createTransport({
             service: 'gmail',

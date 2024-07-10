@@ -4,6 +4,7 @@ interface User{
     email:string;
     phone:string;
     password:string;
+    isVerified:boolean
     isBlocked:boolean;
     isAdmin:boolean;
     isGoogle:boolean;

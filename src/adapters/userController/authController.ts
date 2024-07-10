@@ -15,8 +15,10 @@ class UserController {
 
  async signup(req: Request, res: Response, next: NextFunction){
     try {
+        console.log("here");
+        
         const varifyUser = await this.userUseCase.checkAlreadyExist(req.body.email);
-
+        
     
     if(varifyUser.data.status=== true){ 
         const sendOTP = await this.userUseCase.signup(
@@ -25,27 +27,11 @@ class UserController {
             req.body.phone,
             req.body.password
         )
-        return res.status(200).send(sendOTP);
+        return res.status(sendOTP.status).json(sendOTP.data);
 
+    }else{
+        return res.status(varifyUser.status).json(varifyUser.data)
     }
-
-
-
-   
-
-        const newUser = new UserModel({
-            name: req.body.name,
-            email: req.body.email, 
-            phone: req.body.phone,
-            password: req.body.password,
-            isBlocked: req.body.isBlocked,
-            isAdmin: req.body.isAdmin,
-            isGoogle: req.body.isGoogle
-        });
-        console.log("create", newUser);
-        await newUser.save(); // Save the new user to the database
-
-        res.status(201).json(newUser);
     } catch (error) {
         next(error);
         console.log(error);
@@ -53,6 +39,40 @@ class UserController {
 }
 
 
-}
+async verifyOTP(req:Request,res:Response,next:NextFunction){
+    try {
+  
+       const{otp,email} = req.body;
+        console.log("otp",otp,"email",email);
+        
+       let verify = await this.userUseCase.verifyOtp(email,otp)
+        if(verify.status == 400){
+            return res.status(verify.status).json({message:verify.message });
+        }else if(verify.status ==200){
+            let save =await this.userUseCase.verifyOtpUser(verify.data)
+            if(save){
+                return res.status(save.status).json(save);            }
+        }
 
+    }catch (error) {
+        next(error);
+    }
+    }
+
+
+    async login(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log("here");
+            console.log("req.body",req.body);
+            
+            const {email , password} = req.body;
+            const user =await this.userUseCase.login(email, password);
+            console.log("out",user);
+            
+        }
+        catch (error) {
+            next(error);
+        }
+    }
+}
 export default UserController;
