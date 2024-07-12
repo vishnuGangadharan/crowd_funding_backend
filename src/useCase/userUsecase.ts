@@ -3,7 +3,6 @@ import OTPGenerator from "../infrastructure/services/otpGenerator";
 import EncryptPassword from "../infrastructure/services/bcryptPassword";
 import SendOtp from "../infrastructure/services/sendEmail";
 import jwtService from "../infrastructure/services/generateTocken";
-import { log } from "console";
 
 
 class UserUseCase {
@@ -144,7 +143,9 @@ class UserUseCase {
                     name:user.name,
                     email:user.email,
                     phone: user.phone,
-                    isBlocked:user.isBlocked,       
+                    isBlocked:user.isBlocked,
+                    isAdmin:user.isAdmin,
+
 
                 }
 
@@ -177,6 +178,7 @@ class UserUseCase {
                 
                 if(passwordMatch){
                     token = this.jwtService.generateTocken(user._id, "user")
+                    console.log(token);
                     return{
                         status:200,
                         data:{
@@ -203,6 +205,44 @@ class UserUseCase {
                         status:false,
                         message:"Invalid Credentials",
                         token:""
+                    }
+                }
+            }
+        }catch(error){
+            console.log(error);
+            
+        }
+
+    }
+
+
+
+    async editProfile(data:any){
+        try{
+            console.log("llllllllllllll",data);
+            
+            const user = await this.userRepository.findByEmail(data.email)
+            if(user){
+                if(data.currentPassword){
+                    const passwordMatch = await this.EncryptPassword.compare(data.currentPassword, user.password)
+                    if(!passwordMatch){
+                        return {
+                            status:400,
+                            data:{
+                                status:false,
+                                message:"Invalid password"
+                            }
+                        }
+                    }else{
+                        if(data.newPassword === data.confirmPassword){
+                            const hashedPassword = await this.EncryptPassword.encryptPassword(data.newPassword)
+                            const newUserData = {
+                                name:name,
+                                phone:data.phone,
+                                email:data.email,
+                                password:hashedPassword
+                            }
+                        }
                     }
                 }
             }

@@ -5,6 +5,7 @@ import OTPGenerator from '../../infrastructure/services/otpGenerator';
 
 
 
+
 class UserController {
     private userUseCase: UserUseCase;
     private otpGenerator: OTPGenerator;
@@ -62,14 +63,30 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
 
     async login(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("here");
-            console.log("req.body",req.body);
-            
             const {email , password} = req.body;
             const user =await this.userUseCase.login(email, password);
-            console.log("out",user);
+            if(user){
+
+                return res.status(user.status).cookie('jwt',user.data.token).json(user.data );
+            }
+            
             
         }
+        catch (error) {
+            next(error);
+        }
+    }
+
+
+
+    async editProfile(req: Request, res: Response, next: NextFunction) {
+        try {
+            
+            const data= req.body;
+            console.log("data",data);
+        const user =await this.userUseCase.editProfile(data);
+           
+         }
         catch (error) {
             next(error);
         }
