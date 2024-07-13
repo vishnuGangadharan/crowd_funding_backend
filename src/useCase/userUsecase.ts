@@ -50,7 +50,7 @@ class UserUseCase {
     }
 
 
-    async signup(email: string, name: string, phone: string, password: string) {        
+    async signup(email: string, name: string, phone: string, password: string, isGoogle:boolean) {        
         const otp = this.OTPGenerator.createOTP();
         const hashedPassword = await this.EncryptPassword.encryptPassword(password);
         await this.userRepository.saveOTP(otp, email, name,phone, hashedPassword);
@@ -111,6 +111,25 @@ class UserUseCase {
 
     async verifyOtpUser(user:any){
         //googole auth
+        if(user.isGoogle){
+            const hashedPassword = await this.EncryptPassword.encryptPassword(user.password)
+            const newUser = {...user, password: hashedPassword, isVerified :true}
+            let data= {
+                _id:newUser._id,
+                name: newUser.name,
+                email:newUser.email,
+                phone:newUser.phone,
+                isBlocked:newUser.isBlocked,
+            }
+
+            const token = this.jwtService.generateTocken(newUser._id, "user")
+            return {
+                status:200,
+                data:data,
+                message:"OTP Verified Successfully",
+                token:token
+            }
+        }
 
         let newUser ={...user, isVerified:true}
         const userData = await this.userRepository.save(newUser)

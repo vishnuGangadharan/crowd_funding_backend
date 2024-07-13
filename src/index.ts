@@ -14,8 +14,8 @@ import { httpServer } from './infrastructure/config/app';
 const startServer = async(): Promise<void> => {
    await connectToDb();
    const app =  httpServer;
-   app.listen(3000,()=>{
-       console.log('server running');
+   app.listen(3008,()=>{
+       console.log('server running :3008');
     })
 }
 startServer();

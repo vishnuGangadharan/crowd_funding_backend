@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import UserModel from '../../infrastructure/database/userModel';
 import UserUseCase from '../../useCase/userUsecase';
 import OTPGenerator from '../../infrastructure/services/otpGenerator';
 
@@ -16,9 +15,13 @@ class UserController {
 
  async signup(req: Request, res: Response, next: NextFunction){
     try {
-        console.log("here");
-        
+       console.log("req.body",req.body);
+
+       
         const varifyUser = await this.userUseCase.checkAlreadyExist(req.body.email);
+        if(varifyUser.data.status=== true && req.body.isGoogle){
+            const user = await this.userUseCase.verifyOtpUser(req.body)
+        }
         
     
     if(varifyUser.data.status=== true){ 
@@ -26,7 +29,8 @@ class UserController {
             req.body.email,
             req.body.name,
             req.body.phone,
-            req.body.password
+            req.body.password,
+            req.body.isGoogle,
         )
         return res.status(sendOTP.status).json(sendOTP.data);
 
