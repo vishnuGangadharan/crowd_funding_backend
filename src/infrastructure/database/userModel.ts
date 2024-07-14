@@ -7,6 +7,8 @@ const userSchema:Schema = new Schema<User | Document>({
     phone: {type: String, required: true},
     password: {type: String, required: true},
     isVerified:{type:Boolean, default:false},
+    profilePic: {type: String, default: "https://i.sstatic.net/l60Hf.png"},
+    isFundraiser: {type:Boolean , default: false},
     isBlocked: {type: Boolean, default: false},
     isAdmin: {type: Boolean, default: false},
     isGoogle: {type: Boolean, default: false},

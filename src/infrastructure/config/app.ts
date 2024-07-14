@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import http from 'http'
 import userRoutes from '../routes/userRoutes'
+import adminRoutes from '../routes/adminRoutes'
 import cors from 'cors'
 
 export const httpServer  = http.createServer(app) 
@@ -21,3 +22,4 @@ app.use(session({
 }))
 
 app.use('/api/user',userRoutes)
+app.use('/api/admin',adminRoutes)

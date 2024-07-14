@@ -29,7 +29,6 @@ class UserUseCase {
     async checkAlreadyExist(email: string) {
         const userExist = await this.userRepository.findByEmail(email);
         if(userExist){
-            console.log('exist');
             
             return {
                 status: 400,
@@ -112,21 +111,25 @@ class UserUseCase {
     async verifyOtpUser(user:any){
         //googole auth
         if(user.isGoogle){
+            console.log("kkkkkkkkkkkkkk");
+            
             const hashedPassword = await this.EncryptPassword.encryptPassword(user.password)
-            const newUser = {...user, password: hashedPassword, isVerified :true}
-            let data= {
-                _id:newUser._id,
-                name: newUser.name,
-                email:newUser.email,
-                phone:newUser.phone,
-                isBlocked:newUser.isBlocked,
-            }
-
-            const token = this.jwtService.generateTocken(newUser._id, "user")
+            const newUser = {...user, password: hashedPassword,isGoogle:true, isVerified :true}
+           
+           const userData =   await this.userRepository.save(newUser)
+           let data = {
+            _id: userData._id,
+            name: userData.name,
+            email:userData.email,
+            phone:userData.phone,
+            isGoogle:userData.isGoogle
+        }
+           
+          const token = this.jwtService.generateTocken(newUser._id, "user")           
             return {
                 status:200,
                 data:data,
-                message:"OTP Verified Successfully",
+                message:"Google Verified Successfully",
                 token:token
             }
         }
@@ -140,7 +143,8 @@ class UserUseCase {
             phone:userData.phone,
             isBlocked:userData.isBlocked,
         }
-
+      
+        
         let token = this.jwtService.generateTocken(userData._id, "user")
         return {
             status:200,
@@ -197,7 +201,6 @@ class UserUseCase {
                 
                 if(passwordMatch){
                     token = this.jwtService.generateTocken(user._id, "user")
-                    console.log(token);
                     return{
                         status:200,
                         data:{
@@ -238,7 +241,6 @@ class UserUseCase {
 
     async editProfile(data:any){
         try{
-            console.log("llllllllllllll",data);
             
             const user = await this.userRepository.findByEmail(data.email)
             if(user){

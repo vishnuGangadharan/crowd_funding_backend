@@ -1,26 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
 import UserUseCase from '../../useCase/userUsecase';
-import OTPGenerator from '../../infrastructure/services/otpGenerator';
-
 
 
 
 class UserController {
     private userUseCase: UserUseCase;
-    private otpGenerator: OTPGenerator;
     constructor(userUseCase: UserUseCase){
         this.userUseCase = userUseCase;
-        this.otpGenerator = new OTPGenerator();
     }
 
  async signup(req: Request, res: Response, next: NextFunction){
     try {
        console.log("req.body",req.body);
-
        
         const varifyUser = await this.userUseCase.checkAlreadyExist(req.body.email);
+
         if(varifyUser.data.status=== true && req.body.isGoogle){
             const user = await this.userUseCase.verifyOtpUser(req.body)
+            console.log("userllllllllll",user);
+            
+            return res.status(user.status).json(user.data)
+            
         }
         
     

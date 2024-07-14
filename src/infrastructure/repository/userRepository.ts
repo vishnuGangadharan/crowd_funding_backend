@@ -10,13 +10,7 @@ class UserRepository implements UserRepo {
         return userData
     }
 
-    async saveOTP(
-        otp:number,
-        email: string,
-        name?: string,
-        phone?:string,
-        password?:string,
-    ):Promise<any>{
+    async saveOTP(otp:number,email: string,name?: string,phone?:string,password?:string,):Promise<any>{
         const otpDoc = new OTPModel({
             email,
             name,
