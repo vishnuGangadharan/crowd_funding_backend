@@ -12,8 +12,7 @@ const adminUsecase = new AdminUsecase(adminRepository)
 const adminController = new AdmiController(adminUsecase)
 
 routes.get("/users",(req,res,next)=>adminController.getUsers(req,res,next))
-routes.post("/block-user/:id",(req,res,next)=>adminController.blockUser(req,res,next))
-
+routes.post("/block-status/:id",(req,res,next)=>adminController.blockStatusUpdate(req,res,next))
 
 
 

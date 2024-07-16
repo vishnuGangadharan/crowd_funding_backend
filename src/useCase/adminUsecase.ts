@@ -38,9 +38,9 @@ class AdminUsecase {
         }
     }
 
-    async blockUser(userId:string) {
+    async handleBlockStatus(userId:string, statuss:boolean) {
         try {
-            const user = await this.adminRepository.findByIdAndUpdate(userId)
+            const user = await this.adminRepository.findByIdAndUpdate(userId, statuss)
             if(user){
                 return {
                     status:200,
@@ -65,5 +65,7 @@ class AdminUsecase {
             console.log(error)
         }
 }
+
+   
 }
 export default AdminUsecase
