@@ -274,6 +274,36 @@ class UserUseCase {
 
     }
 
+    async sendOtp(email:string,phone:string){
+        try{
+            const otp = this.OTPGenerator.createOTP();
+            console.log("otp1", otp); 
+            
+            const user = await this.userRepository.findByEmail(email)            
+            if(user){
+            await this.userRepository.saveOTP(otp, email, user.name,phone);
+            console.log("saved");
+            
+            this.GenerateMail.sendEmail(email, otp)
+
+            }else{
+                console.log("user not found");
+                
+            }
+            return {
+                status:200,
+                data: {
+                    status:true,
+                    message: 'verification email send'
+                }
+            }
+
+        }catch(error){
+            console.log(error);
+
+        }
+    }
+
 }
 
 

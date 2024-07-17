@@ -6,7 +6,9 @@ import OTPModel from "../database/otpModel";
 class UserRepository implements UserRepo {
 
     async findByEmail(email: string): Promise<User | null> {
-        const userData = await UserModel.findOne({ email });    
+        const userData = await UserModel.findOne({ email });  
+        console.log("userData",userData);
+          
         return userData
     }
 

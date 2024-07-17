@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import Nodemailer from '../../useCase/interface/nodeMailer';
 import dotenv from 'dotenv';
+import { log } from 'console';
 dotenv.config();
 
 
@@ -27,6 +28,24 @@ class SendOtp implements Nodemailer {
             subject:"fundraising user signup verification",
             text:`${email}, your verification code is: ${otp}`
 
+        }
+        this.transporter.sendMail(mailOPtions, (err)=>{
+            if(err){
+                console.log(err);
+            }else{
+                console.log('verification code sent successfully')
+            }
+        })
+    }
+
+    fundraiserConfirmMail(email: string, otp: number): void {
+        console.log('otpLLL',otp);
+        
+        const mailOPtions : nodemailer.SendMailOptions = {
+            from:process.env.USER,
+            to:email,
+            subject:"otp for you fundraising verification",
+            text:`${email}, your verification code is: ${otp}`
         }
         this.transporter.sendMail(mailOPtions, (err)=>{
             if(err){

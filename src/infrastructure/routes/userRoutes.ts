@@ -27,5 +27,5 @@ routes.post('/signup',(req,res,next)=>userController.signup(req,res,next));
 routes.post('/verify',(req,res,next)=>userController.verifyOTP(req,res,next));
 routes.post('/login',(req,res,next)=> userController.login(req,res,next));
 routes.post('/edit-profile',(req,res,next)=>userController.editProfile(req,res,next));
-
+routes.post('/fund-register',(req,res,next)=> userController.fundRegister(req,res,next));
 export default routes;

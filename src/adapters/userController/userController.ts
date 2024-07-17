@@ -95,5 +95,18 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
             next(error);
         }
     }
+
+
+    async fundRegister(req: Request, res:Response, next:NextFunction){
+        try{
+            const {email,phone} = req.body;
+            const sendOTP = await this.userUseCase.sendOtp(email,phone)
+            if(sendOTP){
+                return res.status(sendOTP?.status).json(sendOTP?.data);
+            }
+        }catch(error){
+            next(error);
+        }
+    }
 }
 export default UserController;
