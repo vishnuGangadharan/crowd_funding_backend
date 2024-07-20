@@ -2,7 +2,8 @@ import User from "../../domain/users";
 import  UserRepo  from "../../useCase/interface/userRepo";
 import UserModel from "../database/userModel";
 import OTPModel from "../database/otpModel";
-
+import beneficiaryModel from "../database/beneficiaryModel";
+import beneficiary from "../../domain/beneficiary";
 class UserRepository implements UserRepo {
 
     async findByEmail(email: string): Promise<User | null> {
@@ -43,6 +44,18 @@ class UserRepository implements UserRepo {
         const savedUser = await newUser.save();
         return savedUser;
     }
+
+
+    async createFundraiser(benificiarys:beneficiary,fundraiser:string):Promise<beneficiary>{
+        const newBenificiary = new beneficiaryModel({
+            ...benificiarys,
+            fundraiser:fundraiser
+        })
+        const savedBenificiary = await newBenificiary.save();
+
+        return savedBenificiary;
+    }
+
 }
 
 export default UserRepository

@@ -97,16 +97,32 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
     }
 
 
-    async fundRegister(req: Request, res:Response, next:NextFunction){
-        try{
-            const {email,phone} = req.body;
-            const sendOTP = await this.userUseCase.sendOtp(email,phone)
-            if(sendOTP){
-                return res.status(sendOTP?.status).json(sendOTP?.data);
+    async fundRegister(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log(req.body);
+            let fundraiser = req.body.currentUserEmail
+            const register = await this.userUseCase.fundRegister(req.body,fundraiser);
+            if(register){
+                return res.status(register.status).json(register.data);
             }
-        }catch(error){
+        } catch (error) {
             next(error);
         }
     }
+
+
+    async fileVerification(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log("here");
+            const {profilePic,supportingDocs} = req.files as { profilePic: Express.Multer.File[], supportingDocs: Express.Multer.File[] };
+            console.log("profilePic",profilePic);
+            console.log("supportingDocs",supportingDocs);
+                        
+        }catch (error) {
+            next(error);
+        }
+            
+    }
 }
+
 export default UserController;

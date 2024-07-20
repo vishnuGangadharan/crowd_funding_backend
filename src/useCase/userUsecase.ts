@@ -3,7 +3,7 @@ import OTPGenerator from "../infrastructure/services/otpGenerator";
 import EncryptPassword from "../infrastructure/services/bcryptPassword";
 import SendOtp from "../infrastructure/services/sendEmail";
 import jwtService from "../infrastructure/services/generateTocken";
-
+import beneficiary from "../domain/beneficiary";
 
 class UserUseCase {
     private userRepository: UserRepository;
@@ -111,7 +111,6 @@ class UserUseCase {
     async verifyOtpUser(user:any){
         //googole auth
         if(user.isGoogle){
-            console.log("kkkkkkkkkkkkkk");
             
             const hashedPassword = await this.EncryptPassword.encryptPassword(user.password)
             const newUser = {...user, password: hashedPassword,isGoogle:true, isVerified :true}
@@ -274,35 +273,34 @@ class UserUseCase {
 
     }
 
-    async sendOtp(email:string,phone:string){
-        try{
-            const otp = this.OTPGenerator.createOTP();
-            console.log("otp1", otp); 
-            
-            const user = await this.userRepository.findByEmail(email)            
-            if(user){
-            await this.userRepository.saveOTP(otp, email, user.name,phone);
-            console.log("saved");
-            
-            this.GenerateMail.sendEmail(email, otp)
 
-            }else{
-                console.log("user not found");
+    async fundRegister(data:beneficiary,fundraiserEmail:string){
+        try{
+            const currentUserId = await this.userRepository.findByEmail(fundraiserEmail)
+            if(currentUserId){
+                console.log("sssss",currentUserId._id);
                 
+                const saveBenifiuer = await this.userRepository.createFundraiser(data,currentUserId._id)
+                if(saveBenifiuer){
+                    return {
+                        status:200,
+                        data:{
+                            status:true,
+                            message:"Beneficiary Registered Successfully"
+                        }
+                    }
             }
-            return {
-                status:200,
-                data: {
-                    status:true,
-                    message: 'verification email send'
-                }
+                
+
             }
 
         }catch(error){
             console.log(error);
 
-        }
+        }   
     }
+
+   
 
 }
 
