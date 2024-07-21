@@ -4,6 +4,7 @@ import EncryptPassword from "../infrastructure/services/bcryptPassword";
 import SendOtp from "../infrastructure/services/sendEmail";
 import jwtService from "../infrastructure/services/generateTocken";
 import beneficiary from "../domain/beneficiary";
+import { log } from "console";
 
 class UserUseCase {
     private userRepository: UserRepository;
@@ -238,33 +239,15 @@ class UserUseCase {
 
 
 
-    async editProfile(data:any){
-        try{
+    async editProfile(data:any,filePath:string){
+        try{    
+            const { name, email, phone} = data;
+            console.log("2");
+            console.log(data.email);
             
             const user = await this.userRepository.findByEmail(data.email)
             if(user){
-                if(data.currentPassword){
-                    const passwordMatch = await this.EncryptPassword.compare(data.currentPassword, user.password)
-                    if(!passwordMatch){
-                        return {
-                            status:400,
-                            data:{
-                                status:false,
-                                message:"Invalid password"
-                            }
-                        }
-                    }else{
-                        if(data.newPassword === data.confirmPassword){
-                            const hashedPassword = await this.EncryptPassword.encryptPassword(data.newPassword)
-                            const newUserData = {
-                                name:name,
-                                phone:data.phone,
-                                email:data.email,
-                                password:hashedPassword
-                            }
-                        }
-                    }
-                }
+                const updateProfile = await this.userRepository.editProfile(data,filePath)
             }
         }catch(error){
             console.log(error);
@@ -277,10 +260,24 @@ class UserUseCase {
     async fundRegister(data:beneficiary,fundraiserEmail:string){
         try{
             const currentUserId = await this.userRepository.findByEmail(fundraiserEmail)
-            if(currentUserId){
-                console.log("sssss",currentUserId._id);
+            const benificiaryEmail = data.email
+            if(benificiaryEmail){ 
+                const verifyBeneficiary = await this.userRepository.verifyBeneficiary(benificiaryEmail)
+                if(verifyBeneficiary){
+                    return {
+                        status:400,
+                        data:{
+                            status:false,
+                            message:"Beneficiary already exists"
+                        }
+                    }
+                }
                 
-                const saveBenifiuer = await this.userRepository.createFundraiser(data,currentUserId._id)
+            }
+
+            if(currentUserId && benificiaryEmail){
+               
+                const saveBenifiuer = await this.userRepository.createFundraiser(data,currentUserId._id)               
                 if(saveBenifiuer){
                     return {
                         status:200,
@@ -300,6 +297,39 @@ class UserUseCase {
         }   
     }
 
+
+    async getBenificiers(userId:string){
+
+        try{
+            const beneficiaries = await this.userRepository.getBenificiers(userId)
+            if(beneficiaries){
+                return {
+                    status:200,
+                    data:{
+                        status:true,
+                        message:"Beneficiaries fetched successfully",
+                        data:beneficiaries
+                    }
+                }
+            }
+        }catch(error){
+            console.log(error);
+        }
+    }
+
+
+    async userDetails(userId: string){
+        const user = await this.userRepository.findById(userId)
+        if(user){
+            return {
+                status:200,
+                data:{
+                    status:true,
+                    data:user
+                }
+            }
+        }
+    }
    
 
 }

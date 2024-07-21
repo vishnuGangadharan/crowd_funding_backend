@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import UserUseCase from '../../useCase/userUsecase';
+import { log } from 'console';
 
 
 
@@ -85,10 +86,14 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
 
     async editProfile(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("here");
             
-            const data= req.body;
-            console.log("data",data);
-        const user =await this.userUseCase.editProfile(data);
+            const {name,email,phone}= req.body;
+            const user = {name,email,phone}
+            const filePath = req.file?.path
+            console.log("1");
+            
+       const updateUser =await this.userUseCase.editProfile(user,filePath as string);
            
          }
         catch (error) {
@@ -99,7 +104,7 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
 
     async fundRegister(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log(req.body);
+            // console.log(req.body);
             let fundraiser = req.body.currentUserEmail
             const register = await this.userUseCase.fundRegister(req.body,fundraiser);
             if(register){
@@ -110,6 +115,7 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
         }
     }
 
+    //profile pic here 
 
     async fileVerification(req: Request, res: Response, next: NextFunction) {
         try {
@@ -117,12 +123,40 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
             const {profilePic,supportingDocs} = req.files as { profilePic: Express.Multer.File[], supportingDocs: Express.Multer.File[] };
             console.log("profilePic",profilePic);
             console.log("supportingDocs",supportingDocs);
+
                         
         }catch (error) {
             next(error);
         }
             
     }
+
+
+    async getBenificiers(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.query.userId as string;
+            
+           const allBenificiers = await this.userUseCase.getBenificiers(userId);
+           if(allBenificiers){
+                return res.status(allBenificiers.status).json(allBenificiers.data);
+            }
+        }
+        catch (error) {
+            next(error);
+        }
+    }
+
+    async getUser(req: Request, res: Response, next: NextFunction){
+        const userId = req.query.userId as string;        
+        const user = await this.userUseCase.userDetails(userId)
+        console.log("user",user);
+        
+        if(user){
+            return res.status(user?.status).json(user?.data)
+        }
+    }
+
+
 }
 
 export default UserController;

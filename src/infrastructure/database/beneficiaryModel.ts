@@ -14,6 +14,12 @@ const beneficiarySchema : Schema = new Schema<beneficiary | Document>({
     age:{type:Number, required:true},
     gender:{type:String, required:true},
     email:{type:String, required:true},
+    isApproved: { 
+        type: String, 
+        enum: ['approved', 'pending', 'rejected'], 
+        default: 'pending',
+        required: true
+      },
     phone:{type:String},
     panNumber:{type:String, required:true},
     userAadharNumber:{type:String, required:true},

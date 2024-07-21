@@ -8,7 +8,11 @@ interface  UserRepo{
     findOtpByEmail(email:string): Promise<any>;
     deleteOtpByEmail(email:string):Promise<any>;
     save(user:User):Promise<User>;
-    createFundraiser(data:beneficiary,fundraiser:string):Promise<beneficiary>;
+    // createFundraiser(data:beneficiary,fundraiser:string):Promise<beneficiary>;
+    verifyBeneficiary(email:string):Promise<any>;
+    getBenificiers(userId:string):Promise<any>;
+    editProfile(data:User,profilePicture:string):Promise<User| null >
+    findById(id:string):Promise<User | null>;
 }
 
 

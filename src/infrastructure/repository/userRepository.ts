@@ -4,7 +4,9 @@ import UserModel from "../database/userModel";
 import OTPModel from "../database/otpModel";
 import beneficiaryModel from "../database/beneficiaryModel";
 import beneficiary from "../../domain/beneficiary";
+import { emit } from "process";
 class UserRepository implements UserRepo {
+
 
     async findByEmail(email: string): Promise<User | null> {
         const userData = await UserModel.findOne({ email });  
@@ -36,6 +38,8 @@ class UserRepository implements UserRepo {
     }
 
     async deleteOtpByEmail(email:string):Promise<any>{
+        console.log("deletd");
+        
         return OTPModel.deleteOne({email})
     }
 
@@ -45,17 +49,42 @@ class UserRepository implements UserRepo {
         return savedUser;
     }
 
-
-    async createFundraiser(benificiarys:beneficiary,fundraiser:string):Promise<beneficiary>{
-        const newBenificiary = new beneficiaryModel({
-            ...benificiarys,
-            fundraiser:fundraiser
-        })
-        const savedBenificiary = await newBenificiary.save();
-
-        return savedBenificiary;
+    async verifyBeneficiary(email: string): Promise<any> {
+        const existBenificary = await beneficiaryModel.findOne({ email });
+        return existBenificary
     }
 
+
+
+    async createFundraiser(beneficiarys: beneficiary, fundraiser: string): Promise<beneficiary> {
+        const newBeneficiary = new beneficiaryModel({
+            ...beneficiarys,
+            fundraiser: fundraiser,
+        });
+        const savedBeneficiary = await newBeneficiary.save();
+        console.log("ben", savedBeneficiary._id);
+        return savedBeneficiary.toObject();
+    }
+
+    async getBenificiers(userId:string): Promise<any> {
+        const beneficiarys = await beneficiaryModel.find({fundraiser:userId});
+        return beneficiarys;
+    }
+
+
+    async editProfile(user:{name:string,email:string,phone:string},profilePicture:string):Promise<any>{
+        const updateUser = await UserModel.updateOne(
+            {email:user.email},
+            { $set:{name:user.name,phone:user.phone,email:user.email,profilePicture:profilePicture}})
+            return updateUser.modifiedCount > 0
+    }
+
+
+    async findById(id: string): Promise<User | null>{
+        const userData = await UserModel.findById(id).exec()
+        return userData
+    }
 }
+
 
 export default UserRepository

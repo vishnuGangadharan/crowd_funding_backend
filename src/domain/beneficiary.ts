@@ -29,6 +29,7 @@ interface beneficiary{
     } //objectid
     name?:string;
     age?:number;
+    isApproved:string;
     email?:string;
     phone?:string;
     gender?:string;
