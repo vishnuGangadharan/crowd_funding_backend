@@ -4,6 +4,8 @@ import EncryptPassword from "../infrastructure/services/bcryptPassword";
 import SendOtp from "../infrastructure/services/sendEmail";
 import jwtService from "../infrastructure/services/generateTocken";
 import beneficiary from "../domain/beneficiary";
+import Cloudinary from "../infrastructure/services/cloudinary";
+import User from "../domain/users";
 import { log } from "console";
 
 class UserUseCase {
@@ -11,19 +13,22 @@ class UserUseCase {
     private OTPGenerator: OTPGenerator;
     private EncryptPassword: EncryptPassword;
     private GenerateMail : SendOtp
-    private jwtService: jwtService
+    private jwtService: jwtService  
+    private cloudinary: Cloudinary
     constructor(
         userRepository: UserRepository,
        OTPGenerator: OTPGenerator,
        EncryptPassword: EncryptPassword,
        GenerateMail: SendOtp,
-       jwtService:jwtService
+       jwtService:jwtService,
+       cloudinary:Cloudinary
     ) {
         this.userRepository = userRepository;
         this.OTPGenerator = OTPGenerator;
         this.EncryptPassword = EncryptPassword;
         this.GenerateMail = GenerateMail;
         this.jwtService = jwtService
+        this.cloudinary = cloudinary
     }
 
 
@@ -239,12 +244,18 @@ class UserUseCase {
 
 
 
-    async editProfile(data:any,filePath:string){
+    async editProfile(data:User,filePath:string){
         try{    
             const { name, email, phone} = data;
             console.log("2");
             console.log(data.email);
-            
+            // if(filePath){
+
+            //     const cloudinary = await this.cloudinary.uploadImage(filePath, "profilePicture")
+            //     console.log("cloudinary",cloudinary);
+                
+            //     data.profilePicture = cloudinary
+            // }
             const user = await this.userRepository.findByEmail(data.email)
             if(user){
                 const updateProfile = await this.userRepository.editProfile(data,filePath)

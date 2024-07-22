@@ -1,4 +1,5 @@
 import AdminRepo from "../../useCase/interface/adminRepo"
+import beneficiaryModel from "../database/beneficiaryModel"
 import UserModel from "../database/userModel"
 
 class AdminRepository implements AdminRepo{
@@ -11,5 +12,15 @@ class AdminRepository implements AdminRepo{
        const user = await UserModel.findByIdAndUpdate(id,{isBlocked:status},{new:true})
        return user ? true : false
 }
+
+    async getRequest(){
+       const request = await beneficiaryModel.find({})
+       return request
+
+    }
+
+
+
+
 }
 export default AdminRepository

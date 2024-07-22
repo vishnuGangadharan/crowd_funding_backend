@@ -43,6 +43,21 @@ class AdmiController {
     }
 
 
+    async getRequest(req: Request, res: Response, next: NextFunction) {
+        try {
+            const request = await this.adminUseCase.getRequest();
+            if (request) {
+                return res.status(request.status).json(request);
+            } else {
+                return res.status(500).json({ error: 'Invalid response' });
+            }
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    }
+
+
    
 }
 

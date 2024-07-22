@@ -66,6 +66,34 @@ class AdminUsecase {
         }
 }
 
+
+async getRequest() {
+    try {
+        const request = await this.adminRepository.getRequest()
+        if(request){
+            return {
+                status:200,
+                data:{
+                    status:true,
+                    data:request,
+                    message:"Request retrieved successfully"
+                }
+            }
+        }else{
+            return {
+                status:404,
+                data:{
+                    status:false,
+                    data:null,
+                    message:"No request found"
+                }
+            }
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
    
+}
 }
 export default AdminUsecase

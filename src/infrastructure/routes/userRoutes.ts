@@ -9,19 +9,18 @@ import jwtService from '../services/generateTocken';
 import upload from '../services/multer';
 const routes = express.Router();
 import  { Request, Response, NextFunction } from 'express';
-
-
+import Cloudinary from '../services/cloudinary';
 //services
 const otpGenerator = new OTPGenerator();
 const encryptPassword = new EncryptPassword();
 const sendOtp = new SendOtp();
 const JwtService = new jwtService();
-
+const cloudinary = new Cloudinary();
 //repositories
 const userRepository = new UserRepository();
 
 //usecase
-const useCase = new UserUseCase(userRepository, otpGenerator, encryptPassword, sendOtp, JwtService);
+const useCase = new UserUseCase(userRepository, otpGenerator, encryptPassword, sendOtp, JwtService, cloudinary);
 
 //controllers
 const userController = new UserController(useCase)

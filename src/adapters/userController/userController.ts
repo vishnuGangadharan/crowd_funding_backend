@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import UserUseCase from '../../useCase/userUsecase';
 import { log } from 'console';
+import User from '../../domain/users';
 
 
 
@@ -93,7 +94,7 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
             const filePath = req.file?.path
             console.log("1");
             
-       const updateUser =await this.userUseCase.editProfile(user,filePath as string);
+       const updateUser =await this.userUseCase.editProfile(user as User,filePath as string);
            
          }
         catch (error) {

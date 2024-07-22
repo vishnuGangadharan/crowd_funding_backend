@@ -22,6 +22,8 @@ cloudinary.config({
                 }
                 
             )
+            console.log("dddddddd",uploadResult);
+            
             return uploadResult.secure_url
         }catch (error) {
             console.error("Error uploading image to cloudinary",error);
