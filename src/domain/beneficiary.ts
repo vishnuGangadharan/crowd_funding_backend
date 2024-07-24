@@ -37,7 +37,7 @@ interface beneficiary{
     userAadharNumber?: string;
     description?: string;
     profilePic?: string;
-    documents?:string;
+    supportingDocs?:string[];
     amount?:number;
     contributedAmount?:string;
     isVerified?:true;

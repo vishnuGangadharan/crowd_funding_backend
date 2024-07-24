@@ -10,8 +10,8 @@ interface  UserRepo{
     save(user:User):Promise<User>;
     // createFundraiser(data:beneficiary,fundraiser:string):Promise<beneficiary>;
     verifyBeneficiary(email:string):Promise<any>;
-    getBenificiers(userId:string):Promise<any>;
-    editProfile(data:User,profilePicture:string):Promise<User| null >
+    getBeneficiaries(userId:string):Promise<any>;
+    editProfile(data:User):Promise<User| null >
     findById(id:string):Promise<User | null>;
 }
 

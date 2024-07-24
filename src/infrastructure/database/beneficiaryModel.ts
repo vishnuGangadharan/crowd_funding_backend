@@ -24,11 +24,11 @@ const beneficiarySchema : Schema = new Schema<beneficiary | Document>({
     panNumber:{type:String, required:true},
     userAadharNumber:{type:String, required:true},
     profilePic:{type:String},
-    documents:{type:String,},
+    supportingDocs:{type:[String],},
     amount:{type:Number, required:true},
     contributedAmount:{type:String,default:0},
     isVerified:{type:Boolean},
-    createdAt:{type:Date, default: Date.now},
+    //createdAt:{type:Date, default: Date.now},
     startDate:{type:Date},
     targetDate:{type:Date, required:true},
     address:{type:String, required:true},
@@ -48,7 +48,7 @@ const beneficiarySchema : Schema = new Schema<beneficiary | Document>({
         instituteState: { type: String },
         institutePin: { type: String }
     }
-})
+},{ timestamps: true })
 
 
 const beneficiaryModel :Model<beneficiary & Document> = mongoose.model<beneficiary & Document>("beneficiary", beneficiarySchema);

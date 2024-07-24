@@ -3,7 +3,10 @@ import UserUseCase from '../../useCase/userUsecase';
 import { log } from 'console';
 import User from '../../domain/users';
 
-
+interface MulterFiles {
+    profilePic: Express.Multer.File[];
+    supportingDocs: Express.Multer.File[];
+  }
 
 class UserController {
     private userUseCase: UserUseCase;
@@ -88,6 +91,8 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
     async editProfile(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("here");
+            console.log("req.body",req.body);
+            console.log("req.file",req.file);
             
             const {name,email,phone}= req.body;
             const user = {name,email,phone}
@@ -95,7 +100,9 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
             console.log("1");
             
        const updateUser =await this.userUseCase.editProfile(user as User,filePath as string);
-           
+           if(updateUser){
+            return res.status(updateUser.status).json(updateUser.data)
+           }
          }
         catch (error) {
             next(error);
@@ -103,12 +110,55 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
     }
 
 
-    async fundRegister(req: Request, res: Response, next: NextFunction) {
+    async sendOtpForBeneficiary(req: Request, res: Response, next:NextFunction){
+        try{
+           console.log(req.body.email);
+           const checkForExisting = await this.userUseCase.findBeneficiary(req.body)
+          
+            return res.status(checkForExisting.status).json(checkForExisting.data)
+          
+        }catch(error){
+            next(error)
+        }
+    }
+
+    async verifyOtpBeneficiary(req:Request,res:Response,next: NextFunction){
+        try{
+            console.log("lohh",req.body);
+            
+            const{otp,email} = req.body;
+            console.log("otp",otp,"email",email);
+           let verify = await this.userUseCase.verifyOtp(email,otp) 
+           console.log("here");
+           console.log(verify);
+          
+
+               return res.status(verify.status).json(verify.message)        
+           
+              
+        }catch(error){
+            next(error)
+        }
+    }
+    
+
+    async fileVerification(req: Request, res: Response, next: NextFunction) {
         try {
-            // console.log(req.body);
-            let fundraiser = req.body.currentUserEmail
-            const register = await this.userUseCase.fundRegister(req.body,fundraiser);
-            if(register){
+            const files = req.files as unknown as MulterFiles;
+            const profilePic = files.profilePic[0];
+            const supportingDocs = files.supportingDocs;
+            const beneficiariesJson = req.body.beneficiaries;
+
+            const beneficiaries = JSON.parse(beneficiariesJson); 
+
+            const fundraiserEmail = beneficiaries.currentUserEmail;
+            let supportingDocsPath = supportingDocs.map((val) => val.path);
+            const profilePicPath = profilePic.path;
+   
+            const register = await this.userUseCase.fundRegister(beneficiaries, fundraiserEmail,supportingDocsPath,profilePicPath);
+
+            if (register) {
+
                 return res.status(register.status).json(register.data);
             }
         } catch (error) {
@@ -116,30 +166,14 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
         }
     }
 
-    //profile pic here 
 
-    async fileVerification(req: Request, res: Response, next: NextFunction) {
-        try {
-            console.log("here");
-            const {profilePic,supportingDocs} = req.files as { profilePic: Express.Multer.File[], supportingDocs: Express.Multer.File[] };
-            console.log("profilePic",profilePic);
-            console.log("supportingDocs",supportingDocs);
-
-                        
-        }catch (error) {
-            next(error);
-        }
-            
-    }
-
-
-    async getBenificiers(req: Request, res: Response, next: NextFunction) {
+    async getBeneficiary(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.query.userId as string;
             
-           const allBenificiers = await this.userUseCase.getBenificiers(userId);
-           if(allBenificiers){
-                return res.status(allBenificiers.status).json(allBenificiers.data);
+           const allBeneficiaries = await this.userUseCase.getBeneficiaries(userId);
+           if(allBeneficiaries){
+                return res.status(allBeneficiaries.status).json(allBeneficiaries.data);
             }
         }
         catch (error) {

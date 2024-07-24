@@ -12,7 +12,7 @@ const userSchema:Schema = new Schema<User | Document>({
     isBlocked: {type: Boolean, default: false},
     isAdmin: {type: Boolean, default: false},
     isGoogle: {type: Boolean, default: false},
-});
+},{ timestamps: true });
 
 const UserModel:Model<User&Document>=mongoose.model<User & Document>("User", userSchema);
 

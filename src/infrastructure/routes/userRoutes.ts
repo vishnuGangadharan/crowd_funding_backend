@@ -29,11 +29,11 @@ routes.post('/signup',(req,res,next)=>userController.signup(req,res,next));
 routes.post('/verify',(req,res,next)=>userController.verifyOTP(req,res,next));
 routes.post('/login',(req,res,next)=> userController.login(req,res,next));
 routes.post('/edit-profile', upload.single('profilePicture'), (req, res, next) => userController.editProfile(req, res, next));
-routes.post('/fund-register',(req,res,next)=> userController.fundRegister(req,res,next));
 routes.post('/media-uploader', upload.fields([{ name: "profilePic", maxCount:1}, { name: "supportingDocs", maxCount: 3}]),(req,res, next)=>{
         userController.fileVerification(req,res,next)
         })
-routes.get('/getBenificiers',(req,res,next)=>userController.getBenificiers(req,res,next));
+routes.get('/getBenificiers',(req,res,next)=>userController.getBeneficiary(req,res,next));
 routes.get('/user-details',(req,res,next)=>userController.getUser(req,res,next));
-
+routes.post('/beneficiary-verification',(req,res,next)=> userController.sendOtpForBeneficiary(req,res,next))
+routes.post('/beneficiary-otpverify',(req,res,next)=> userController.verifyOtpBeneficiary(req,res,next))
 export default routes;

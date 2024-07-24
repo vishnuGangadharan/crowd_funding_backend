@@ -50,15 +50,17 @@ class UserRepository implements UserRepo {
     }
 
     async verifyBeneficiary(email: string): Promise<any> {
-        const existBenificary = await beneficiaryModel.findOne({ email });
-        return existBenificary
+        const existBeneficiary = await beneficiaryModel.findOne({ email });
+        return existBeneficiary
     }
 
 
 
-    async createFundraiser(beneficiarys: beneficiary, fundraiser: string): Promise<beneficiary> {
+    async createFundraiser(beneficiary: beneficiary, fundraiser: string): Promise<beneficiary> {
+        console.log("creation final check",beneficiary);
+        
         const newBeneficiary = new beneficiaryModel({
-            ...beneficiarys,
+            ...beneficiary,
             fundraiser: fundraiser,
         });
         const savedBeneficiary = await newBeneficiary.save();
@@ -66,16 +68,18 @@ class UserRepository implements UserRepo {
         return savedBeneficiary.toObject();
     }
 
-    async getBenificiers(userId:string): Promise<any> {
-        const beneficiarys = await beneficiaryModel.find({fundraiser:userId});
-        return beneficiarys;
+    async getBeneficiaries(userId:string): Promise<any> {
+        const beneficiaries = await beneficiaryModel.find({fundraiser:userId});
+        return beneficiaries;
     }
 
 
-    async editProfile(user:{name:string,email:string,phone:string},profilePicture:string):Promise<any>{
+    async editProfile(user:{name:string,email:string,phone:string,profilePicture:string}):Promise<any>{
+        console.log("updated user",user);
+        
         const updateUser = await UserModel.updateOne(
             {email:user.email},
-            { $set:{name:user.name,phone:user.phone,email:user.email,profilePicture:profilePicture}})
+            { $set:{name:user.name,phone:user.phone,email:user.email,profilePicture:user.profilePicture}})
             return updateUser.modifiedCount > 0
     }
 

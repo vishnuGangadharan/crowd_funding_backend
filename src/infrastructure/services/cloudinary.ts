@@ -6,14 +6,18 @@ import cloudinaryI from '../../useCase/interface/cloundinaryRepo';
 
 dotenv.config();
 cloudinary.config({
-    cloud_name: "dqz0q5xvu",
+    cloud_name: "dfzpyl4bi",
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
+
 });
+
 
  class Cloudinary implements cloudinaryI{
     async uploadImage(image: any, folderName: string): Promise<string> {
         try{
+            console.log("cloud");
+            
             const uploadResult = await cloudinary.uploader
             .upload(
                 image,{
