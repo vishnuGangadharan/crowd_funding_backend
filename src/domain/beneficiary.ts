@@ -36,7 +36,7 @@ interface beneficiary{
     panNumber?:string;
     userAadharNumber?: string;
     description?: string;
-    profilePic?: string;
+    profilePic?: string[];
     supportingDocs?:string[];
     amount?:number;
     contributedAmount?:string;

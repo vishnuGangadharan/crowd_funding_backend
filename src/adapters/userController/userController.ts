@@ -2,9 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import UserUseCase from '../../useCase/userUsecase';
 import { log } from 'console';
 import User from '../../domain/users';
+import beneficiary from '../../domain/beneficiary';
 
 interface MulterFiles {
-    profilePic: Express.Multer.File[];
+    profilePics: Express.Multer.File[];
     supportingDocs: Express.Multer.File[];
   }
 
@@ -145,7 +146,9 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
     async fileVerification(req: Request, res: Response, next: NextFunction) {
         try {
             const files = req.files as unknown as MulterFiles;
-            const profilePic = files.profilePic[0];
+            const profilePic = files.profilePics;
+            console.log("profilepic",profilePic);
+            
             const supportingDocs = files.supportingDocs;
             const beneficiariesJson = req.body.beneficiaries;
 
@@ -153,7 +156,7 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
 
             const fundraiserEmail = beneficiaries.currentUserEmail;
             let supportingDocsPath = supportingDocs.map((val) => val.path);
-            const profilePicPath = profilePic.path;
+            const profilePicPath = profilePic.map((val) => val.path)
    
             const register = await this.userUseCase.fundRegister(beneficiaries, fundraiserEmail,supportingDocsPath,profilePicPath);
 
@@ -189,6 +192,16 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
         if(user){
             return res.status(user?.status).json(user?.data)
         }
+    }
+
+    async getPostDetails(req:Request,res:Response,next:NextFunction){
+        const userId = req.query.postId
+        
+        const response = await this.userUseCase.getPostDetails(userId as string)
+        if(response){
+            return res.status(response?.status).json(response.data)
+        }
+        
     }
 
 

@@ -13,6 +13,7 @@ interface  UserRepo{
     getBeneficiaries(userId:string):Promise<any>;
     editProfile(data:User):Promise<User| null >
     findById(id:string):Promise<User | null>;
+    getPostDetailsById(userId : string) : Promise <beneficiary | null >
 }
 
 

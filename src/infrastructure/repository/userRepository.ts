@@ -88,6 +88,12 @@ class UserRepository implements UserRepo {
         const userData = await UserModel.findById(id).exec()
         return userData
     }
+
+    async getPostDetailsById(userId: string): Promise<beneficiary | null> {
+        const postData = await beneficiaryModel.findById(userId).populate('fundraiser').exec() 
+        return postData
+        
+    }
 }
 
 

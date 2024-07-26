@@ -23,7 +23,7 @@ const beneficiarySchema : Schema = new Schema<beneficiary | Document>({
     phone:{type:String},
     panNumber:{type:String, required:true},
     userAadharNumber:{type:String, required:true},
-    profilePic:{type:String},
+    profilePic:{type:[String],required:true},
     supportingDocs:{type:[String],},
     amount:{type:Number, required:true},
     contributedAmount:{type:String,default:0},

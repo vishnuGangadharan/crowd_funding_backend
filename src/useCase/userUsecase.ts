@@ -318,7 +318,7 @@ class UserUseCase {
     }
 
 
-    async fundRegister(data: beneficiary, fundraiserEmail: string,supportingDocs:string[],profilePic:string) {
+    async fundRegister(data: beneficiary, fundraiserEmail: string,supportingDocs:string[],profilePic:string[]) {
         try {
             const currentUserId = await this.userRepository.findByEmail(fundraiserEmail)
             console.log(currentUserId);
@@ -341,7 +341,7 @@ class UserUseCase {
             if(supportingDocs && profilePic){
                 console.log("cloudina");
                 
-                const cloudinary = await this.cloudinary.uploadImage( profilePic , "profilePicture")
+                const cloudinary = await this.cloudinary.uploadMultipleimages( profilePic as any, "profilePicture")
                 data.profilePic = cloudinary
 
                 const multiPics = await this.cloudinary.uploadMultipleimages( supportingDocs as any, "supportingDocs")
@@ -402,6 +402,23 @@ class UserUseCase {
                 data: {
                     status: true,
                     data: user
+                }
+            }
+        }
+    }
+
+    async getPostDetails(userId : string){
+        const postDetails = await this.userRepository.getPostDetailsById(userId)
+       
+    
+        console.log("postDetails",postDetails);
+        
+        if(postDetails){
+            return {
+                status :200,
+                data: {
+                    status: true,
+                    data:postDetails
                 }
             }
         }
