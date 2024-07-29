@@ -37,4 +37,7 @@ routes.get('/user-details',(req,res,next)=>userController.getUser(req,res,next))
 routes.post('/beneficiary-verification',(req,res,next)=> userController.sendOtpForBeneficiary(req,res,next))
 routes.post('/beneficiary-otpverify',(req,res,next)=> userController.verifyOtpBeneficiary(req,res,next))
 routes.get('/post-details', (req,res,next)=> userController.getPostDetails(req,res,next))
+routes.post('/add-comment', (req,res, next)=> userController.addComment(req,res,next))
+
+
 export default routes;

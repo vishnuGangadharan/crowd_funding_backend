@@ -205,6 +205,15 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
     }
 
 
+    async addComment(req: Request, res: Response, next: NextFunction){
+        const {comment, postId, userId} = req.body;
+        const saveComment = await this.userUseCase.addComment(comment, postId, userId);
+        if(saveComment){
+            return res.status(saveComment.status).json(saveComment.data)
+        }
+        
+    }
+
 }
 
 export default UserController;

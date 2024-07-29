@@ -425,6 +425,20 @@ class UserUseCase {
     }
 
 
+   async addComment(comment :string, postId:string, userId:string){
+        const saveComment = await this.userRepository.createComment(comment, userId, postId)
+        if(saveComment){
+            return {
+            status:200,
+            data : {
+                status : true,
+                message : "Comment Added Successfully"
+            }
+            } 
+        }
+    
+   } 
+
 }
 
 

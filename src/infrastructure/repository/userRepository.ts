@@ -5,6 +5,8 @@ import OTPModel from "../database/otpModel";
 import beneficiaryModel from "../database/beneficiaryModel";
 import beneficiary from "../../domain/beneficiary";
 import { emit } from "process";
+import { comments } from "../../domain/comment";
+import commentModel from "../database/commentModel";
 class UserRepository implements UserRepo {
 
 
@@ -93,6 +95,16 @@ class UserRepository implements UserRepo {
         const postData = await beneficiaryModel.findById(userId).populate('fundraiser').exec() 
         return postData
         
+    }
+
+    async createComment(comment: string, userId: string, postId: string): Promise<comments> {
+        const newComment = new commentModel({
+            comment,
+            userId,
+            postId,
+        });
+        const savedComment = await newComment.save();
+        return savedComment.toObject();
     }
 }
 

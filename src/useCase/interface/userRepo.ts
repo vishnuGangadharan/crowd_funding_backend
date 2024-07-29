@@ -1,6 +1,7 @@
 import User from "../../domain/users";
 import OTP from "../../domain/otp";
 import beneficiary from "../../domain/beneficiary";
+import { comments } from "../../domain/comment";
 
 interface  UserRepo{
     findByEmail(email:string): Promise<User | null>;
@@ -14,6 +15,7 @@ interface  UserRepo{
     editProfile(data:User):Promise<User| null >
     findById(id:string):Promise<User | null>;
     getPostDetailsById(userId : string) : Promise <beneficiary | null >
+    createComment(comment: string, userId: string, postId: string): Promise<comments>;
 }
 
 
