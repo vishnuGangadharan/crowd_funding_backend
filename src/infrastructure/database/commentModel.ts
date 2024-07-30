@@ -10,6 +10,10 @@ const commentSchema: Schema<comments & Document > = new Schema(
             required: true
 
         },
+        userName:{
+            type:String,
+            require:true
+        },
         comment : {
             type: String,
             required: true

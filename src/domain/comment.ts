@@ -1,8 +1,10 @@
-import { Schema } from "mongoose";
+import { Schema, Document } from "mongoose";
 
-export interface comments {
+export interface comments extends Document {
     comment:string;
     userId: Schema.Types.ObjectId;
     postId : Schema.Types.ObjectId;
-    createdAt:Date;
+    createdAt: Date;
+    updatedAt: Date;
+    userName: string
 }

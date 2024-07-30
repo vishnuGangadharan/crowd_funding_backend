@@ -97,14 +97,21 @@ class UserRepository implements UserRepo {
         
     }
 
-    async createComment(comment: string, userId: string, postId: string): Promise<comments> {
+    async createComment(comment: string, userId: string, postId: string, userName:string): Promise<comments> {
         const newComment = new commentModel({
             comment,
             userId,
             postId,
+            userName,
         });
         const savedComment = await newComment.save();
         return savedComment.toObject();
+    }
+
+
+    async getComments(id: string): Promise<comments[]> {
+        const comments = await commentModel.find({ postId: id }).lean().sort({ createdAt: -1 }).exec();
+        return comments
     }
 }
 

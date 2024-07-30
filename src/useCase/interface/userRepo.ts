@@ -15,7 +15,8 @@ interface  UserRepo{
     editProfile(data:User):Promise<User| null >
     findById(id:string):Promise<User | null>;
     getPostDetailsById(userId : string) : Promise <beneficiary | null >
-    createComment(comment: string, userId: string, postId: string): Promise<comments>;
+    createComment(comment: string, userId: string, postId: string, userName:string): Promise<comments>;
+    getComments(id: string) : Promise<comments[]>;
 }
 
 

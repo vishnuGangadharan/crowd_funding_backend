@@ -146,9 +146,7 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
     async fileVerification(req: Request, res: Response, next: NextFunction) {
         try {
             const files = req.files as unknown as MulterFiles;
-            const profilePic = files.profilePics;
-            console.log("profilepic",profilePic);
-            
+            const profilePic = files.profilePics;            
             const supportingDocs = files.supportingDocs;
             const beneficiariesJson = req.body.beneficiaries;
 
@@ -210,6 +208,16 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
         const saveComment = await this.userUseCase.addComment(comment, postId, userId);
         if(saveComment){
             return res.status(saveComment.status).json(saveComment.data)
+        }
+        
+    }
+
+
+    async getComments(req:Request, res : Response, next : NextFunction){
+        const {id} = req.query;
+        const comments = await this.userUseCase.getComments(id as string)
+        if(comments){
+            return res.status(comments.status).json(comments.data)
         }
         
     }

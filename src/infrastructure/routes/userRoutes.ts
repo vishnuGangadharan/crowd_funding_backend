@@ -34,10 +34,10 @@ routes.post('/media-uploader', upload.fields([{ name: "profilePics", maxCount:3}
         })
 routes.get('/getBenificiers',(req,res,next)=>userController.getBeneficiary(req,res,next));
 routes.get('/user-details',(req,res,next)=>userController.getUser(req,res,next));
-routes.post('/beneficiary-verification',(req,res,next)=> userController.sendOtpForBeneficiary(req,res,next))
-routes.post('/beneficiary-otpverify',(req,res,next)=> userController.verifyOtpBeneficiary(req,res,next))
-routes.get('/post-details', (req,res,next)=> userController.getPostDetails(req,res,next))
-routes.post('/add-comment', (req,res, next)=> userController.addComment(req,res,next))
-
+routes.post('/beneficiary-verification',(req,res,next)=> userController.sendOtpForBeneficiary(req,res,next));
+routes.post('/beneficiary-otpverify',(req,res,next)=> userController.verifyOtpBeneficiary(req,res,next));
+routes.get('/post-details', (req,res,next)=> userController.getPostDetails(req,res,next));
+routes.post('/add-comment', (req,res, next)=> userController.addComment(req,res,next));
+routes.get('/get-comments', (req,res, next) => userController.getComments(req,res,next));
 
 export default routes;

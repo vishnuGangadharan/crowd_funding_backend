@@ -409,10 +409,7 @@ class UserUseCase {
 
     async getPostDetails(userId : string){
         const postDetails = await this.userRepository.getPostDetailsById(userId)
-       
-    
-        console.log("postDetails",postDetails);
-        
+               
         if(postDetails){
             return {
                 status :200,
@@ -426,7 +423,9 @@ class UserUseCase {
 
 
    async addComment(comment :string, postId:string, userId:string){
-        const saveComment = await this.userRepository.createComment(comment, userId, postId)
+        const user = await this.userRepository.findById(userId)
+        const userName = user?.name   
+        const saveComment = await this.userRepository.createComment(comment, userId, postId, userName as string)
         if(saveComment){
             return {
             status:200,
@@ -436,8 +435,23 @@ class UserUseCase {
             }
             } 
         }
-    
-   } 
+   }
+
+   
+   async getComments(id:string){
+
+    const allComments = await this.userRepository.getComments(id)
+    if(allComments){
+        return {
+            status : 200,
+             data : {
+                status:true,
+                data: allComments
+             }
+        }
+    }
+
+   }
 
 }
 
