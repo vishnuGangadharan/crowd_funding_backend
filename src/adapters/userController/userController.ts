@@ -79,8 +79,6 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
 
                 return res.status(user.status).cookie('jwt',user.data.token).json(user.data );
             }
-            
-            
         }
         catch (error) {
             next(error);
@@ -220,6 +218,14 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
             return res.status(comments.status).json(comments.data)
         }
         
+    }
+
+    async getAllPost(req: Request, res: Response, next: NextFunction){
+        const posts = await this.userUseCase.allPost()
+
+        if(posts){
+            return res.status(posts.status).json(posts.data)
+        } 
     }
 
 }

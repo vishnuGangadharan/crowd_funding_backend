@@ -39,5 +39,6 @@ routes.post('/beneficiary-otpverify',(req,res,next)=> userController.verifyOtpBe
 routes.get('/post-details', (req,res,next)=> userController.getPostDetails(req,res,next));
 routes.post('/add-comment', (req,res, next)=> userController.addComment(req,res,next));
 routes.get('/get-comments', (req,res, next) => userController.getComments(req,res,next));
+routes.get('/all-posts', (req, res, next) => userController.getAllPost(req,res, next));
 
 export default routes;

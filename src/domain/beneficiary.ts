@@ -29,7 +29,6 @@ interface beneficiary{
     } //objectid
     name?:string;
     age?:number;
-    isApproved:string;
     email?:string;
     phone?:string;
     gender?:string;
@@ -41,6 +40,7 @@ interface beneficiary{
     amount?:number;
     contributedAmount?:string;
     isVerified?:true;
+    isApproved?: 'pending' | 'approved' | 'rejected';
     createdAt?:Date;
     startDate?:Date;
     targetDate?:Date;

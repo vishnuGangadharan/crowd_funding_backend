@@ -113,6 +113,11 @@ class UserRepository implements UserRepo {
         const comments = await commentModel.find({ postId: id }).lean().sort({ createdAt: -1 }).exec();
         return comments
     }
+
+    async getAllPost(): Promise<beneficiary[]> {
+        const posts = await beneficiaryModel.find({ isApproved: "approved" }).populate('fundraiser').exec();
+        return posts; 
+       }
 }
 
 

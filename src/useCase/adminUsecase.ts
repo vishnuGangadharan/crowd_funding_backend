@@ -95,5 +95,22 @@ async getRequest() {
     }
    
 }
+
+
+async approvalPost(postId :string, status:string){
+    const updateStatus = await this.adminRepository.updateStatus(postId,status)
+    console.log("upa",updateStatus);
+    
+    if(updateStatus){
+        return {
+            status: 200,
+            data:{
+                status:true,
+                message: "Updated success fully",
+            }
+        }
+    }
+
+}
 }
 export default AdminUsecase

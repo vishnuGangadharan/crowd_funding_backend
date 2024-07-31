@@ -58,6 +58,22 @@ class AdmiController {
     }
 
 
+    async postApproval(req : Request, res: Response, next: NextFunction){
+        try{
+          const {postId , status} = req.body;
+          console.log(req.body); 
+            const response = await this.adminUseCase.approvalPost(postId, status)
+            console.log("ddd",response);
+            if(response){
+                return res.status(response.status).json(response.data)
+            }
+        }catch(error){
+            console.log(error);
+            next(error)
+            
+        }
+    }
+
    
 }
 

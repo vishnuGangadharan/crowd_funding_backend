@@ -453,6 +453,20 @@ class UserUseCase {
 
    }
 
+
+   async allPost(){
+    const posts = await this.userRepository.getAllPost()
+    if(posts){
+        return {
+            status :200,
+            data : {
+                status: true,
+                data: posts,
+            }
+        }
+    }
+   }
+
 }
 
 
