@@ -183,7 +183,6 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
     async getUser(req: Request, res: Response, next: NextFunction){
         const userId = req.query.userId as string;        
         const user = await this.userUseCase.userDetails(userId)
-        console.log("user",user);
         
         if(user){
             return res.status(user?.status).json(user?.data)
