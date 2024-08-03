@@ -11,6 +11,18 @@ class jwtService implements JWT{
         }
         throw new Error("JWT_SECRET_KEY not found")
     }
+
+    generateRefreshToken(userId:string,role:string){
+        try{
+            const secretKey = process.env.JWT_SECRET_KEY
+            const payload = {userId,role}
+            const refreshToken = jwt.sign(payload,secretKey as string ,{expiresIn:"6d"} )
+            return refreshToken
+        }catch(error){
+            console.log("refreshtockn error",error);
+            
+        }
+    }
 }
 
 export default jwtService

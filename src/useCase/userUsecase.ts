@@ -7,6 +7,7 @@ import beneficiary from "../domain/beneficiary";
 import Cloudinary from "../infrastructure/services/cloudinary";
 import User from "../domain/users";
 import { log } from "console";
+import { PasswordData } from "../domain/interface";
 
 class UserUseCase {
     private userRepository: UserRepository;
@@ -138,11 +139,13 @@ class UserUseCase {
             }
 
             const token = this.jwtService.generateToken(newUser._id, "user")
+            let refreshToken =  this.jwtService.generateRefreshToken(newUser._id, "user")
             return {
                 status: 200,
                 data: data,
                 message: "Google Verified Successfully",
-                token: token
+                token: token,
+                refreshToken:refreshToken
             }
         }
 
@@ -158,11 +161,14 @@ class UserUseCase {
 
 
         let token = this.jwtService.generateToken(userData._id, "user")
+        let refreshToken =  this.jwtService.generateRefreshToken(newUser._id, "user")
+
         return {
             status: 200,
             data: data,
             message: "OTP Verified Successfully",
-            token: token
+            token: token,
+            refreshToken:refreshToken
         }
 
 
@@ -259,7 +265,6 @@ class UserUseCase {
             if (filePath) {
 
                 const cloudinary = await this.cloudinary.uploadImage(filePath, "profilePicture")
-                console.log("cloudinary", cloudinary);
 
                 data.profilePicture = cloudinary
 
@@ -464,6 +469,50 @@ class UserUseCase {
                 data: posts,
             }
         }
+    }
+   }
+
+   async updatePassword(data :PasswordData , userId:string){
+    try{
+
+        const user = await this.userRepository.findById(userId)
+        
+        if(user && data.newPassword){
+            const match = await this.EncryptPassword.compare(data.currentPassword, user.password)
+            console.log("match",match);
+            
+            if(match){
+                const hashedPassword = await this.EncryptPassword.encryptPassword(data.newPassword)
+                const updateUser = await this.userRepository.updatePassword(hashedPassword,userId)
+                console.log("ss");
+                
+                if(updateUser){
+                    console.log("done");
+                    
+                    return {
+                        status: 200,
+                        data: {
+                            status : true,
+                            message: "updated successfully"
+                        }
+                    }
+                }
+                
+            }else{
+                return{
+                    status: 400,
+                    data: {
+                        status: false,
+                        message: "current password not match"
+                    }
+                }
+                
+            }
+        }
+        
+    }catch(error){
+        console.log(error);
+        
     }
    }
 

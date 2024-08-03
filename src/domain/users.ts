@@ -11,4 +11,6 @@ interface User{
     isAdmin:boolean;
     isGoogle:boolean;
 }
+
+
 export default User;

@@ -3,6 +3,8 @@ import UserUseCase from '../../useCase/userUsecase';
 import { log } from 'console';
 import User from '../../domain/users';
 import beneficiary from '../../domain/beneficiary';
+import { PasswordData } from '../../domain/interface';
+
 
 interface MulterFiles {
     profilePics: Express.Multer.File[];
@@ -89,14 +91,11 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
 
     async editProfile(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("here");
-            console.log("req.body",req.body);
-            console.log("req.file",req.file);
             
             const {name,email,phone}= req.body;
             const user = {name,email,phone}
             const filePath = req.file?.path
-            console.log("1");
+          
             
        const updateUser =await this.userUseCase.editProfile(user as User,filePath as string);
            if(updateUser){
@@ -146,15 +145,65 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
             const files = req.files as unknown as MulterFiles;
             const profilePic = files.profilePics;            
             const supportingDocs = files.supportingDocs;
-            const beneficiariesJson = req.body.beneficiaries;
+//mycode
 
-            const beneficiaries = JSON.parse(beneficiariesJson); 
+const beneficiariesJson = JSON.parse(req.body.beneficiaries);
+    
+// Log the parsed beneficiaries data
+//console.log("Beneficiaries data:", beneficiariesJson);
 
-            const fundraiserEmail = beneficiaries.currentUserEmail;
+const { category, ...rest } = beneficiariesJson;
+//console.log("Category:", category);
+const beneficiaryData = {
+    ...rest,
+    category,
+    ...(category === 'education' ? {
+      educationDetails: {
+        instituteName: rest.instituteName,
+        instituteState: rest.instituteState,
+        instituteDistrict: rest.instituteDistrict,
+        institutePostalAddress: rest.institutePostalAddress,
+        institutePin: rest.institutePin,
+      },
+    } : {
+      medicalDetails: {
+        hospitalName: rest.hospitalName,
+        hospitalPostalAddress: rest.hospitalPostalAddress,
+        hospitalState: rest.hospitalState,
+        hospitalDistrict: rest.hospitalDistrict,
+        hospitalPin: rest.hospitalPin,
+      },
+    })
+  };
+
+  // Remove the top-level fields that are now nested
+  if (category === 'education') {
+    delete beneficiaryData.instituteName;
+    delete beneficiaryData.instituteState;
+    delete beneficiaryData.instituteDistrict;
+    delete beneficiaryData.institutePostalAddress;
+    delete beneficiaryData.institutePin;
+  } else {
+    delete beneficiaryData.hospitalName;
+    delete beneficiaryData.hospitalPostalAddress;
+    delete beneficiaryData.hospitalState;
+    delete beneficiaryData.hospitalDistrict;
+    delete beneficiaryData.hospitalPin;
+  }
+console.log("final",beneficiaryData);
+
+
+//inside     
+        //     const beneficiariesJson = req.body.beneficiaries;
+        //    console.log("beneficiariesJson",beneficiariesJson);
+
+           // const beneficiaries = JSON.parse(beneficiariesJson); 
+
+           const fundraiserEmail = beneficiaryData.currentUserEmail;
             let supportingDocsPath = supportingDocs.map((val) => val.path);
             const profilePicPath = profilePic.map((val) => val.path)
    
-            const register = await this.userUseCase.fundRegister(beneficiaries, fundraiserEmail,supportingDocsPath,profilePicPath);
+           const register = await this.userUseCase.fundRegister(beneficiaryData, fundraiserEmail,supportingDocsPath,profilePicPath);
 
             if (register) {
 
@@ -224,8 +273,29 @@ async verifyOTP(req:Request,res:Response,next:NextFunction){
 
         if(posts){
             return res.status(posts.status).json(posts.data)
-        } 
+        }  
     }
+
+
+    async updatePassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.id;
+            console.log("userid",userId);
+            console.log("data",req.body);
+            
+            
+            const { currentPassword , newPassword ,confirmPassword} = req.body;
+            const data = { currentPassword , newPassword ,confirmPassword};
+            const changePassword = await this.userUseCase.updatePassword(data as PasswordData, userId as string);
+            if(changePassword){
+            res.status( changePassword?.status).json(changePassword?.data)
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'An error occurred while updating the password' });
+        }
+    }
+    
 
 }
 

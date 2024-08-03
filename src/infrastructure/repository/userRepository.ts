@@ -12,7 +12,6 @@ class UserRepository implements UserRepo {
 
     async findByEmail(email: string): Promise<User | null> {
         const userData = await UserModel.findOne({ email });  
-        console.log("userData",userData);
           
         return userData
     }
@@ -64,6 +63,7 @@ class UserRepository implements UserRepo {
         const newBeneficiary = new beneficiaryModel({
             ...beneficiary,
             fundraiser: fundraiser,
+            medicalDetails:{}
         });
         const savedBeneficiary = await newBeneficiary.save();
         console.log("ben", savedBeneficiary._id);
@@ -76,8 +76,7 @@ class UserRepository implements UserRepo {
     }
 
 
-    async editProfile(user:{name:string,email:string,phone:string,profilePicture:string}):Promise<any>{
-        console.log("updated user",user);
+    async editProfile(user:{name?:string,email?:string,phone?:string,profilePicture?:string}):Promise<any>{
         
         const updateUser = await UserModel.updateOne(
             {email:user.email},
@@ -118,6 +117,17 @@ class UserRepository implements UserRepo {
         const posts = await beneficiaryModel.find({ isApproved: "approved" }).populate('fundraiser').exec();
         return posts; 
        }
+
+    async updatePassword(password: string, userId:string): Promise<User | null> {
+        const update = await UserModel.findByIdAndUpdate(
+            {_id: userId},
+            { $set:{ password:password }},
+            { new:true }
+        )
+        console.log("update",update);
+        
+        return update
+    }
 }
 
 

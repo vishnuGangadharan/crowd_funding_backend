@@ -18,6 +18,7 @@ interface  UserRepo{
     createComment(comment: string, userId: string, postId: string, userName:string): Promise<comments>;
     getComments(id: string) : Promise<comments[]>;
     getAllPost() : Promise<beneficiary[]>
+    updatePassword(password:string, userId:string):Promise <User| null>
 
 }
 

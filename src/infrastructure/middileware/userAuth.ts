@@ -3,17 +3,14 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import UserModel from "../database/userModel";
 
 export const userAuth = async (req: Request, res: Response, next: NextFunction) => {
-    console.log("here");
     const authHeader = req.headers.authorization
     
-    console.log("authheader",authHeader);
     
     if(!authHeader || !authHeader.startsWith("Bearer")) {
         return res.status(401).json({ message: "Authorization header missing or invalid"})
     }
      
     const token  = authHeader.split(" ")[1];
-    console.log("tokenn",token);
     
 
     try{
@@ -24,7 +21,6 @@ export const userAuth = async (req: Request, res: Response, next: NextFunction) 
 
         const userId = decodeToken.userId;
         const user = await UserModel.findById(userId)
-        console.log("founddd",user);
         
         if(!user){
             return res.status(400).json({ message: "User not found"})

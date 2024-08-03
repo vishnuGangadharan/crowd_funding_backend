@@ -41,5 +41,6 @@ routes.get('/post-details',userAuth, (req,res,next)=> userController.getPostDeta
 routes.post('/add-comment',userAuth, (req,res, next)=> userController.addComment(req,res,next));
 routes.get('/get-comments', (req,res, next) => userController.getComments(req,res,next));
 routes.get('/all-posts',userAuth, (req, res, next) => userController.getAllPost(req,res, next));
+routes.post('/update-password/:id',userAuth,(req, res, next) => userController.updatePassword(req, res, next))
 
 export default routes;
