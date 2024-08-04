@@ -42,5 +42,10 @@ routes.post('/add-comment',userAuth, (req,res, next)=> userController.addComment
 routes.get('/get-comments', (req,res, next) => userController.getComments(req,res,next));
 routes.get('/all-posts',userAuth, (req, res, next) => userController.getAllPost(req,res, next));
 routes.post('/update-password/:id',userAuth,(req, res, next) => userController.updatePassword(req, res, next))
+routes.post('/report-post', userAuth, (req, res, next) => userController.reportPost(req, res, next))
+
+//try
+routes.post('/get-session-id' ,userAuth, (req, res, next) => userController.setPayment(req, res, next))
+
 
 export default routes;

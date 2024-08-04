@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import UserUseCase from '../../useCase/userUsecase';
-import { log } from 'console';
 import User from '../../domain/users';
 import beneficiary from '../../domain/beneficiary';
 import { PasswordData } from '../../domain/interface';
@@ -295,7 +294,37 @@ console.log("final",beneficiaryData);
             res.status(500).json({ error: 'An error occurred while updating the password' });
         }
     }
+
+
+    async reportPost(req: Request, res: Response, next: NextFunction) {
+        try {
+            const reportData = req.body;
+            console.log("reportData",reportData);
+            
+            const report = await this.userUseCase.reportPost(reportData);
+            if(report){
+                return res.status(report.status).json(report.data)
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
     
+    //payment
+    async setPayment(req: Request, res: Response, next: NextFunction) {
+        try {
+            const response = await this.userUseCase.setPayment();
+            console.log("fffkkk",response);
+            
+           if(response){
+              return res.status(response.status).json(response.data);
+           }
+        } catch (error) {
+            next(error);
+        }
+    }
 
 }
 

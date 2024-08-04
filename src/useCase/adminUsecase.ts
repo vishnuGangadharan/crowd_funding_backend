@@ -112,5 +112,21 @@ async approvalPost(postId :string, status:string){
     }
 
 }
+
+
+async allReports(){
+    const allReport = await this.adminRepository.getallReports()
+   
+    if(allReport){
+        return {
+            status :200,
+            data :{
+                status:true,
+                data: allReport
+            }
+        }
+    }
+
+}
 }
 export default AdminUsecase

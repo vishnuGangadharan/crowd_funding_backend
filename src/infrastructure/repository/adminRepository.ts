@@ -1,6 +1,8 @@
 import beneficiary from "../../domain/beneficiary"
+import { PostReport } from "../../domain/postReport"
 import AdminRepo from "../../useCase/interface/adminRepo"
 import beneficiaryModel from "../database/beneficiaryModel"
+import PostReportModel from "../database/postReportModel"
 import UserModel from "../database/userModel"
 
 class AdminRepository implements AdminRepo{
@@ -25,7 +27,11 @@ class AdminRepository implements AdminRepo{
         return update
     }
 
+    async getallReports(): Promise<PostReport[] | null> {
+        const allReport = await PostReportModel.find({})
+        return allReport
 
+    }
 
 
 }

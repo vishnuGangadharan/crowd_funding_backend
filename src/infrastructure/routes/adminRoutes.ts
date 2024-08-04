@@ -15,6 +15,6 @@ routes.get("/users",(req,res,next)=>adminController.getUsers(req,res,next))
 routes.post("/block-status/:id",(req,res,next)=>adminController.blockStatusUpdate(req,res,next))
 routes.get("/campaign-request",(req,res,next)=>adminController.getRequest(req,res,next))
 routes.post("/post-approval", (req,res,next) => adminController.postApproval(req, res, next))
-
+routes.get('/all-reports', (req,res,next) => adminController.getAllReports(req,res,next))
 
 export default routes

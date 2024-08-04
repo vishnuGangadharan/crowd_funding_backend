@@ -8,6 +8,8 @@ import Cloudinary from "../infrastructure/services/cloudinary";
 import User from "../domain/users";
 import { log } from "console";
 import { PasswordData } from "../domain/interface";
+import { PostReport } from "../domain/postReport";
+import Stripe from "stripe";
 
 class UserUseCase {
     private userRepository: UserRepository;
@@ -515,6 +517,75 @@ class UserUseCase {
         
     }
    }
+
+
+async reportPost(reportData: PostReport) {
+    const post = await this.userRepository.findPostById(reportData.postId as unknown as string)
+    if (post) {
+        const saveReport = await this.userRepository.createReport(reportData)
+        if (saveReport) {
+            return {
+                status: 200,
+                data: {
+                    status: true,
+                    message: "Reported Successfully"
+                }
+            }
+        }
+    }
+    return {
+        status: 401,
+        data: {
+            status: false,
+            message: "Post not found or report not saved"
+        }
+    }
+}
+
+async setPayment(){
+    console.log("herrrrrl");
+    const stripeKey = process.env.STRIPE_KEY;
+    if (!stripeKey) {
+        throw new Error('Stripe key is not defined');
+    }
+    const stripe = new Stripe(stripeKey);
+
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: "Premium Subscription",
+              },
+              unit_amount: 1999 * 100,
+            },
+            quantity: 1,
+          },
+        ],
+        mode: "payment",
+        success_url: "http://localhost:5173/paymentSuccess",
+        cancel_url: "http://localhost:5173/company",
+        // customer_email: email,
+        billing_address_collection: "auto",
+        shipping_address_collection: {
+          allowed_countries: ["US", "CA", "GB", "IN"],
+        },
+      });
+      console.log("fffffffffffff",session.id);
+      
+  if(session){
+    return { 
+        status : 200,
+        data : {
+            status : true,
+            data : session.id
+        }
+    }
+  }
+}
+
 
 }
 

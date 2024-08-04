@@ -7,6 +7,8 @@ import beneficiary from "../../domain/beneficiary";
 import { emit } from "process";
 import { comments } from "../../domain/comment";
 import commentModel from "../database/commentModel";
+import { PostReport } from "../../domain/postReport";
+import PostReportModel from "../database/postReportModel";
 class UserRepository implements UserRepo {
 
 
@@ -128,7 +130,19 @@ class UserRepository implements UserRepo {
         
         return update
     }
+
+
+async findPostById(postId: string): Promise<beneficiary | null> {
+    const postExists = await beneficiaryModel.findById(postId)
+    return postExists
 }
 
+async createReport(reportData: PostReport): Promise<PostReport | boolean> {
+    const newReport = new PostReportModel(reportData)
+    const saveReport = await newReport.save();
+    return saveReport
+}
+
+}
 
 export default UserRepository

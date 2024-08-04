@@ -74,6 +74,22 @@ class AdmiController {
         }
     }
 
+
+    async getAllReports(req: Request, res: Response, next: NextFunction) {
+        try {
+            const allReports = await this.adminUseCase.allReports();
+            if (allReports && allReports.status) {
+                return res.status(allReports.status).json(allReports.data);
+            } else {
+                return res.status(500).json({ error: 'Invalid response' });
+            }
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    }
+
+
    
 }
 

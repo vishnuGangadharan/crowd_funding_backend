@@ -2,6 +2,7 @@ import User from "../../domain/users";
 import OTP from "../../domain/otp";
 import beneficiary from "../../domain/beneficiary";
 import { comments } from "../../domain/comment";
+import { PostReport } from "../../domain/postReport";
 
 interface  UserRepo{
     findByEmail(email:string): Promise<User | null>;
@@ -19,7 +20,8 @@ interface  UserRepo{
     getComments(id: string) : Promise<comments[]>;
     getAllPost() : Promise<beneficiary[]>
     updatePassword(password:string, userId:string):Promise <User| null>
-
+    findPostById(postId:string):Promise < beneficiary | null>
+    createReport(reportData : PostReport) : Promise <PostReport | boolean>
 }
 
 

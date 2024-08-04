@@ -25,7 +25,6 @@ interface beneficiary{
     fundraiser:{
         type: typeof Schema.Types.ObjectId;
         ref: "User"
-        required:true
     } //objectid
     name?:string;
     age?:number;
