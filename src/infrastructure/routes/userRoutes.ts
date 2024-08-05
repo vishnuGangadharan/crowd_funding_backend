@@ -43,9 +43,9 @@ routes.get('/get-comments', (req,res, next) => userController.getComments(req,re
 routes.get('/all-posts',userAuth, (req, res, next) => userController.getAllPost(req,res, next));
 routes.post('/update-password/:id',userAuth,(req, res, next) => userController.updatePassword(req, res, next))
 routes.post('/report-post', userAuth, (req, res, next) => userController.reportPost(req, res, next))
-
-//try
+//payment
 routes.post('/get-session-id' ,userAuth, (req, res, next) => userController.setPayment(req, res, next))
+routes.get('/get-donations',userAuth,(req,res,next) => userController.getDonations(req,res,next));
 
 
 export default routes;

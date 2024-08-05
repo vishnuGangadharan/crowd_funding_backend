@@ -37,7 +37,7 @@ interface beneficiary{
     profilePic?: string[];
     supportingDocs?:string[];
     amount?:number;
-    contributedAmount?:string;
+    contributedAmount?:number;
     isVerified?:true;
     isApproved?: 'pending' | 'approved' | 'rejected';
     createdAt?:Date;

@@ -3,6 +3,7 @@ import OTP from "../../domain/otp";
 import beneficiary from "../../domain/beneficiary";
 import { comments } from "../../domain/comment";
 import { PostReport } from "../../domain/postReport";
+import { Donations } from "../../domain/donations";
 
 interface  UserRepo{
     findByEmail(email:string): Promise<User | null>;
@@ -22,6 +23,9 @@ interface  UserRepo{
     updatePassword(password:string, userId:string):Promise <User| null>
     findPostById(postId:string):Promise < beneficiary | null>
     createReport(reportData : PostReport) : Promise <PostReport | boolean>
+    saveDonation(donationData:Donations):Promise<Donations>;
+    getDonations(userId:string):Promise<Donations[]>;
+    updateContribution(amount:number , beneficiaryId:string):Promise<boolean>
 }
 
 

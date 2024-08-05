@@ -26,7 +26,7 @@ const beneficiarySchema : Schema = new Schema<beneficiary | Document>({
     profilePic:{type:[String],required:true},
     supportingDocs:{type:[String],},
     amount:{type:Number, required:true},
-    contributedAmount:{type:String,default:0},
+    contributedAmount:{type:Number,default:0},
     // isVerified:{type:Boolean},
     //createdAt:{type:Date, default: Date.now},
     startDate:{type:Date},

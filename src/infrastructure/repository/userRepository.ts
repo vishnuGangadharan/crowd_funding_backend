@@ -9,6 +9,8 @@ import { comments } from "../../domain/comment";
 import commentModel from "../database/commentModel";
 import { PostReport } from "../../domain/postReport";
 import PostReportModel from "../database/postReportModel";
+import { Donations } from "../../domain/donations";
+import DonationModel from "../database/donationsModel";
 class UserRepository implements UserRepo {
 
 
@@ -142,6 +144,49 @@ async createReport(reportData: PostReport): Promise<PostReport | boolean> {
     const saveReport = await newReport.save();
     return saveReport
 }
+
+async saveDonation(donationData: Donations): Promise<Donations> {
+    const newDonation = new DonationModel(donationData)
+    const saveDonation = await newDonation.save();
+    return saveDonation
+
+}
+
+async getDonations(beneficiaryId: string): Promise<Donations[]> {
+    const donations = await DonationModel.find({ beneficiaryId: beneficiaryId }).populate('userId').exec();
+    
+    console.log("donations",donations);
+    
+    return donations;
+}
+
+async updateContribution(amount: number, beneficiaryId: string): Promise<boolean> {
+    try {
+        // Log the initial type and value
+        console.log("Initial type and value:", typeof amount, amount);
+
+        // Ensure amount is a number
+        const numericAmount = Number(amount);
+
+        // Log the type and value after conversion
+        console.log("Converted type and value:", typeof numericAmount, numericAmount);
+
+        if (isNaN(numericAmount)) {
+            throw new Error('Invalid amount value');
+        }
+
+        const updateAmount = await beneficiaryModel.updateOne(
+            { _id: beneficiaryId },
+            { $inc: { contributedAmount: numericAmount } }
+        );
+
+        return updateAmount.modifiedCount > 0;
+    } catch (error) {
+        console.error('Error updating contribution:', error);
+        return false;
+    }
+}
+
 
 }
 

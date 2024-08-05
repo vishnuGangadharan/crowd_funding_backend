@@ -10,6 +10,7 @@ import { log } from "console";
 import { PasswordData } from "../domain/interface";
 import { PostReport } from "../domain/postReport";
 import Stripe from "stripe";
+import { Donations } from "../domain/donations";
 
 class UserUseCase {
     private userRepository: UserRepository;
@@ -542,8 +543,9 @@ async reportPost(reportData: PostReport) {
     }
 }
 
-async setPayment(){
-    console.log("herrrrrl");
+async setPayment(data: Donations) {
+    let amount = data.amount
+    
     const stripeKey = process.env.STRIPE_KEY;
     if (!stripeKey) {
         throw new Error('Stripe key is not defined');
@@ -559,21 +561,20 @@ async setPayment(){
               product_data: {
                 name: "Premium Subscription",
               },
-              unit_amount: 1999 * 100,
+              unit_amount: data.amount * 100,
             },
             quantity: 1,
           },
         ],
         mode: "payment",
-        success_url: "http://localhost:5173/paymentSuccess",
+        success_url: `http://localhost:3000/postdetails/${data.beneficiaryId}`,
         cancel_url: "http://localhost:5173/company",
         // customer_email: email,
-        billing_address_collection: "auto",
-        shipping_address_collection: {
-          allowed_countries: ["US", "CA", "GB", "IN"],
-        },
+         billing_address_collection: "auto"
       });
-      console.log("fffffffffffff",session.id);
+      const saveDonation = await this.userRepository.saveDonation(data)
+      const updateContribution = await this.userRepository.updateContribution(data.amount as number,data.beneficiaryId as any)
+      console.log("saved");
       
   if(session){
     return { 
@@ -584,6 +585,28 @@ async setPayment(){
         }
     }
   }
+}
+
+
+async getDonations(beneficiaryId: string){
+    try{
+
+        const donations = await this.userRepository.getDonations(beneficiaryId)
+        
+        if(donations){
+            return {
+                status : 200,
+                data : {
+                    status : true,
+                    data : donations
+                }
+            }
+        }
+
+    }catch(error){
+        console.log(error);
+
+    }
 }
 
 

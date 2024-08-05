@@ -3,6 +3,7 @@ import UserUseCase from '../../useCase/userUsecase';
 import User from '../../domain/users';
 import beneficiary from '../../domain/beneficiary';
 import { PasswordData } from '../../domain/interface';
+import { Donations } from '../../domain/donations';
 
 
 interface MulterFiles {
@@ -315,8 +316,17 @@ console.log("final",beneficiaryData);
     //payment
     async setPayment(req: Request, res: Response, next: NextFunction) {
         try {
-            const response = await this.userUseCase.setPayment();
-            console.log("fffkkk",response);
+            const { amount, anonymousName, userId, beneficiaryId } = req.body;
+            const paymentData = {
+                amount,
+                anonymousName,
+                userId,
+                beneficiaryId
+              };
+              console.log("paymentData",paymentData);
+              
+            
+            const response = await this.userUseCase.setPayment(paymentData as Donations);
             
            if(response){
               return res.status(response.status).json(response.data);
@@ -326,6 +336,23 @@ console.log("final",beneficiaryData);
         }
     }
 
-}
 
+
+    async getDonations(req: Request, res: Response, next: NextFunction) {
+        try {
+            
+            const beneficiaryId = req.query.beneficiaryId as string;
+            const getDonations = await this.userUseCase.getDonations(beneficiaryId);
+            if(getDonations){
+                return res.status(getDonations.status).json(getDonations.data);
+            }
+            
+        } catch (error) {
+            console.log(error);
+            next(error);
+            
+        }
+    }
+
+}
 export default UserController;
