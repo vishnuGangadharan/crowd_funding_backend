@@ -19,7 +19,7 @@ const donationSchema = new Schema <Donations>({
     },
     anonymousName: {
         type: String,
-        
+        required: true
     }
 },{timestamps:true})
 

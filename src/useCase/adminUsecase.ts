@@ -10,15 +10,18 @@ class AdminUsecase {
     }
 
 
-    async getUsers() {
+    async getUsers(page: number, limit:number, searchTerm : string) {
         try {
-            const users = await this.adminRepository.findAllUsers() 
+            const users = await this.adminRepository.findAllUsers(page, limit, searchTerm) 
             if(users){
                 return {
                     status:200,
                     data:{
                         status:true,
-                        data:users,
+                        data:users.users,
+                        total:users.total,
+                        page,
+                        limit,
                         message:"Users retrieved successfully"
                     }
                 }
@@ -128,5 +131,20 @@ async allReports(){
     }
 
 }
+
+async getPostDetails(userId : string){
+    const postDetails = await this.adminRepository.getPostDetailsById(userId)
+           
+    if(postDetails){
+        return {
+            status :200,
+            data: {
+                status: true,
+                data:postDetails
+            }
+        }
+    }
+}
+
 }
 export default AdminUsecase

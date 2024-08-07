@@ -146,6 +146,8 @@ async createReport(reportData: PostReport): Promise<PostReport | boolean> {
 }
 
 async saveDonation(donationData: Donations): Promise<Donations> {
+   console.log("anonymousName name",donationData.anonymousName);
+   
     const newDonation = new DonationModel(donationData)
     const saveDonation = await newDonation.save();
     return saveDonation

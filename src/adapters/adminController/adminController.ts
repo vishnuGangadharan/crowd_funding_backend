@@ -12,8 +12,12 @@ class AdmiController {
     }
 
     async getUsers(req: Request, res: Response, next: NextFunction) {
-        try {            
-            const users = await this.adminUseCase.getUsers()            
+        try {      
+            const page = parseInt(req.query.page as string)|| 1
+            const limit = parseInt(req.query.limit as string) || 5
+            const searchTerm = req.query.searchTerm as string || ''  
+                
+            const users = await this.adminUseCase.getUsers(page, limit, searchTerm)            
             if(users){                
                 return res.status(users?.status).json(users)
             }
@@ -87,6 +91,17 @@ class AdmiController {
             console.log(error);
             next(error);
         }
+    }
+
+
+    async getPostDetails(req:Request,res:Response,next:NextFunction){
+        const userId = req.query.postId
+        
+        const response = await this.adminUseCase.getPostDetails(userId as string)
+        if(response){
+            return res.status(response?.status).json(response.data)
+        }
+        
     }
 
 

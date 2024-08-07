@@ -7,9 +7,19 @@ import UserModel from "../database/userModel"
 
 class AdminRepository implements AdminRepo{
 
-   async findAllUsers(){
-       const users = await UserModel.find({isAdmin:false})
-       return users
+   async findAllUsers(page:number, limit:number, searchTerm: string){
+    const skip = (page-1) * limit
+    const query = searchTerm?
+        {
+            isAdmin:false,$or:[
+                {name:{$regex:searchTerm,$options:'i'}},
+                {email:{$regex:searchTerm,$options:'i'}}
+            ]
+        }
+        :{ isAdmin:false}
+       const users = await UserModel.find(query).skip(skip).limit(limit).lean()
+       const total = await UserModel.countDocuments(query)
+       return {users, total}
    }
    async findByIdAndUpdate(id:string,status:boolean):Promise<boolean>{
        const user = await UserModel.findByIdAndUpdate(id,{isBlocked:status},{new:true})
@@ -31,6 +41,12 @@ class AdminRepository implements AdminRepo{
         const allReport = await PostReportModel.find({})
         return allReport
 
+    }
+
+    async getPostDetailsById(userId: string): Promise<beneficiary | null> {
+        const postData = await beneficiaryModel.findById(userId).populate('fundraiser').exec() 
+        return postData
+        
     }
 
 
