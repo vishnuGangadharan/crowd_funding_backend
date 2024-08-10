@@ -26,6 +26,7 @@ interface  UserRepo{
     saveDonation(donationData:Donations):Promise<Donations>;
     getDonations(userId:string):Promise<Donations[]>;
     updateContribution(amount:number , beneficiaryId:string):Promise<boolean>
+    findReport(userId:string): Promise<PostReport | null>
 }
 
 

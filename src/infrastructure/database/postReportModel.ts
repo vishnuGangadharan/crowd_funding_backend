@@ -16,6 +16,9 @@ const postReportSchema = new Schema<PostReport>({
         type: String,
         required: true
     },
+    image: {
+        type :String
+    },
     comment: {
         type: String,
         required: true

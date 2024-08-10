@@ -299,8 +299,16 @@ console.log("final",beneficiaryData);
 
     async reportPost(req: Request, res: Response, next: NextFunction) {
         try {
-            const reportData = req.body;
-            console.log("reportData",reportData);
+            const { userId, postId, reason, comment } = req.body;
+            const file = req.file;
+            const reportData = {
+                userId,
+                postId,
+                reason,
+                comment,
+                image: file ? file.path : null, 
+              };
+
             
             const report = await this.userUseCase.reportPost(reportData);
             if(report){

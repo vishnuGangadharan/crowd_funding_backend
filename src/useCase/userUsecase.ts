@@ -521,8 +521,25 @@ class UserUseCase {
 
 
 async reportPost(reportData: PostReport) {
+
+    if(reportData.image){
+        const cloudinary = await this.cloudinary.uploadImage(reportData.image, "reportImage")
+        reportData.image = cloudinary
+    }
     const post = await this.userRepository.findPostById(reportData.postId as unknown as string)
-    if (post) {
+    const allReadyReported = await this.userRepository.findReport(reportData.userId as any)
+    if(allReadyReported){
+        
+        return {
+            status:400,
+            data:{
+                status:false,
+                message: "Your report has been already submitted"
+            }
+        }        
+    }
+
+    if (post && !allReadyReported) {
         const saveReport = await this.userRepository.createReport(reportData)
         if (saveReport) {
             return {

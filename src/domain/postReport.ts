@@ -7,4 +7,5 @@ export interface PostReport {
     comment?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    image? : string | null
 }

@@ -40,11 +40,11 @@ routes.post('/beneficiary-otpverify',userAuth,(req,res,next)=> userController.ve
 routes.get('/post-details',userAuth, (req,res,next)=> userController.getPostDetails(req,res,next));
 routes.post('/add-comment',userAuth, (req,res, next)=> userController.addComment(req,res,next));
 routes.get('/get-comments', (req,res, next) => userController.getComments(req,res,next));
-routes.get('/all-posts',userAuth, (req, res, next) => userController.getAllPost(req,res, next));
+routes.get('/all-posts', (req, res, next) => userController.getAllPost(req,res, next));
 routes.post('/update-password/:id',userAuth,(req, res, next) => userController.updatePassword(req, res, next))
-routes.post('/report-post', userAuth, (req, res, next) => userController.reportPost(req, res, next))
+routes.post('/report-post' , upload.single("file") , userAuth, (req, res, next) => userController.reportPost(req, res, next))
 //payment
-routes.post('/get-session-id' ,userAuth, (req, res, next) => userController.setPayment(req, res, next))
+routes.post('/get-session-id',userAuth, (req, res, next) => userController.setPayment(req, res, next))
 routes.get('/get-donations',userAuth,(req,res,next) => userController.getDonations(req,res,next));
 
 

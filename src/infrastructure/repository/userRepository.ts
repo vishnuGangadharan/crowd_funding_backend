@@ -189,6 +189,11 @@ async updateContribution(amount: number, beneficiaryId: string): Promise<boolean
     }
 }
 
+async findReport(userId: string): Promise<PostReport | null> {
+    const existUserReport = await PostReportModel.findOne({ userId });
+    return existUserReport;
+}
+
 
 }
 
