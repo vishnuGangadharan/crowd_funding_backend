@@ -1,5 +1,5 @@
 import mongoose,{Document, Model, model, Schema} from "mongoose";
-import { chatTypes } from "../../domain/chatMessege";
+import { chatTypes } from "../../domain/chatMessage";
 
 const chatSchema: Schema = new Schema({
     senderId :{
@@ -24,7 +24,8 @@ const chatSchema: Schema = new Schema({
 },{timestamps: true})
 
 
-const messageModel = Model<chatTypes> = model<chatTypes>('Chat',chatSchema);
+
+const messageModel : Model<chatTypes> = model<chatTypes>('Chat',chatSchema);
 export default messageModel;
 
 

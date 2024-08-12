@@ -1,6 +1,6 @@
 import express from "express";
 const routes = express.Router();
-import AdmiController from "../../adapters/adminController/adminController";
+import AdmiController from "../../adapters/adminController";
 import AdminUsecase from "../../useCase/adminUsecase";
 import AdminRepository from "../repository/adminRepository";
 

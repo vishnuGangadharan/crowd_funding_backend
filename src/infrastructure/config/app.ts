@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import http from 'http'
 import userRoutes from '../routes/userRoutes'
 import adminRoutes from '../routes/adminRoutes'
+import chatRoutes from '../routes/chatRoutes'
 import cors from 'cors'
 import morg from 'morgan'
 import { Server as SocketIOServer } from 'socket.io';
@@ -31,29 +32,63 @@ app.use(morg('dev'))
 
 app.use('/api/user',userRoutes)
 app.use('/api/admin',adminRoutes)
+app.use('/api/chat',chatRoutes)
 
 
 //new part
 
+// const io = new SocketIOServer(httpServer, {
+//     cors: corsOptions,
+//   });
+
+//   io.on('connection', (socket) => {
+//     console.log('A user connected:', socket.id);
+  
+//     socket.on('join-room', (room) => {
+//       socket.join(room);
+//       console.log(`${socket.id} joined room: ${room}`);
+//     });
+  
+//     socket.on('message', ({ room, message }) => {
+//       console.log({ room, message });
+//       io.to(room).emit('receive-message', message);
+//     });
+  
+//     socket.on('disconnect', () => {
+//       console.log('A user disconnected:', socket.id);
+//     });
+//   });
+  
 const io = new SocketIOServer(httpServer, {
-    cors: corsOptions,
+  cors: corsOptions,
+});
+
+
+
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id);
+
+  socket.on('join-room', (userIds) => {
+    const room = getRoomId(userIds);
+    socket.join(room);
+    console.log(`${socket.id} joined room: ${room}`);
   });
 
-  io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
-  
-    socket.on('join-room', (room) => {
-      socket.join(room);
-      console.log(`${socket.id} joined room: ${room}`);
+  socket.on('message', ({ userIds, message }) => {
+    const room = getRoomId(userIds);
+    io.to(room).emit('receive-message', {
+      from: userIds[0], // Assuming sender is the first in the array
+      text: message,
+      room,
     });
-  
-    socket.on('message', ({ room, message }) => {
-      console.log({ room, message });
-      io.to(room).emit('receive-message', message);
-    });
-  
-    socket.on('disconnect', () => {
-      console.log('A user disconnected:', socket.id);
-    });
+    console.log(`Message to room ${room}: ${message}`);
   });
-  
+
+  socket.on('disconnect', () => {
+    console.log('A user disconnected:', socket.id);
+  });
+});
+
+function getRoomId(userIds : string[]): string {
+  return userIds.sort().join('-');
+}

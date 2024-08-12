@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import AdminUseCase from '../../useCase/adminUsecase';
+import AdminUseCase from '../useCase/adminUsecase';
 
 
 class AdmiController {
