@@ -6,25 +6,19 @@ class ChatUseCase {
         this.chatRepository = new ChatRepository();
     }
 
-    async sendMessage(senderId: string, receiverId: string, message: string): Promise<chatTypes | null> {   
-        console.log('chat use case', senderId, receiverId, message);
+    async sendMessage(senderId: string, recipientId: string, message: string): Promise<string | null> {   
+        console.log('chat use case', senderId, recipientId, message);
         
         const data = {
             senderId,
-            receiverId,
+            recipientId,
             message
         }
         const response = await this.chatRepository.sendMessage(data as chatTypes);
         
-        // if(response){
-        //     return {
-        //         status: 200,
-        //         data:{
-        //             message: 'message sent successfully',
-        //             data: response
-        //         }
-        //     }
-        // }
+        if(response){
+            return response
+        }
         return null;
     }
 
@@ -48,6 +42,24 @@ class ChatUseCase {
         }
     }
     
+
+    async chattedUsers(senderId: string){
+        try{
+            const chattedUsers = await this.chatRepository.chattedUsers(senderId)
+            if(chattedUsers){
+                return {
+                    status:200,
+                    data:{
+                        status:true,
+                        data:chattedUsers
+                    }
+                }
+            }
+        }catch(error){
+            console.log(error);
+            
+        }
+    }
 
 }
 

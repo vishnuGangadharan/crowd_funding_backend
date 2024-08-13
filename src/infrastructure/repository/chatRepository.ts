@@ -1,4 +1,4 @@
-import { chatTypes } from "../../domain/chatMessage";
+import { chatTypes, PopulatedChat } from "../../domain/chatMessage";
 import ChatRepo from "../../useCase/interface/chatRepo";
 import messageModel from "../database/chatModel";
 
@@ -6,23 +6,65 @@ import messageModel from "../database/chatModel";
 class ChatRepository implements ChatRepo{
     
 
-    sendMessage(data: chatTypes): Promise<chatTypes | null> {
-        const newMessage = new messageModel(data)
-        const saveMessage = newMessage.save();
-        console.log('saved');
+    // sendMessage(data: chatTypes){
+    //     const newMessage = new messageModel(data)
+    //     const saveMessage = newMessage.save();
+    //     console.log('saved');
         
-        return saveMessage;
+    // }
+    async sendMessage(data: chatTypes): Promise<string> {
+        const newMessage = new messageModel(data);
+        await newMessage.save();
+        console.log('saved');
+        return "saved";
     }
 
-    getMessages(senderId: string, receiverId: string): Promise<chatTypes[] | null> {
-        const messages = messageModel.find({
+    async getMessages(senderId: string, receiverId: string): Promise<chatTypes[] | null> {
+        const messages =await messageModel.find({
             $or: [
-                { senderId: senderId, receiverId: receiverId },
-                { senderId: receiverId, receiverId: senderId }
+                { senderId: senderId, recipientId: receiverId },
+                { senderId: receiverId, recipientId: senderId }
             ]
-        })
+        }).sort({createdAt :1})
         return messages;
     }
+
+    async chattedUsers(senderId: string): Promise<{ _id: string; name: string }[] | null> {
+        try {
+          const chats = await messageModel.find({
+            $or: [
+              { senderId: senderId },
+              { recipientId: senderId },
+            ],
+          })
+          .populate('senderId', 'name')
+          .populate('recipientId', 'name');
+      
+          const users = new Map<string, { _id: string; name: string }>();
+      
+          chats.forEach(chat => {
+            const sender = chat.senderId as unknown as { _id: string; name: string };
+            const recipient = chat.recipientId as unknown as { _id: string; name: string };
+
+            if (sender && sender._id !== senderId) {
+              users.set(sender._id.toString(), { _id: sender._id.toString(), name: sender.name });
+            }
+
+            if (recipient && recipient._id !== senderId) {
+              users.set(recipient._id.toString(), { _id: recipient._id.toString(), name: recipient.name });
+            }
+          });
+      
+          // Convert the Map to an array to return the list of unique users
+          return Array.from(users.values());
+          
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      }
+      
+    
 }
 
 export default ChatRepository;

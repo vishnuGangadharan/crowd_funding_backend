@@ -12,13 +12,11 @@ class ChatController {
     async sendMessage(req: Request, res: Response, next: NextFunction) {
         try {
 
-            const { senderId, receiverId, message } = req.body;
-            const response = await this.chatUseCase.sendMessage(senderId, receiverId, message);
-            // if (response ) {
-            //     return res.status(response).json(response);
-            // } else {
-            //     return res.status(500).json({ error: 'Invalid response' });
-            // }
+
+            const {senderId, recipientId, message } = req.body;
+            console.log("seder",senderId, " receiver", recipientId,"message", message);
+            const response = await this.chatUseCase.sendMessage(senderId, recipientId, message);
+           if(response) res.status(200).json(response);
         } catch (error) {
             console.log(error);
             next(error);
@@ -37,6 +35,19 @@ class ChatController {
             return res.status(getMessage?.status).json(getMessage?.data);
         } catch (error) {
             next(error);
+        }
+    }
+
+
+
+    async chattedUsers(req:Request, res: Response , next: NextFunction) {
+        try{
+            let senderId = req.query.id
+            const response = await this.chatUseCase.chattedUsers(senderId as string)
+            console.log("response",response);
+            if(response) res.status(response.status).json(response.data)
+        }catch(error){
+            next(error)
         }
     }
 

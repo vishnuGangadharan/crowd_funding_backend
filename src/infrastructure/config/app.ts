@@ -8,9 +8,12 @@ import chatRoutes from '../routes/chatRoutes'
 import cors from 'cors'
 import morg from 'morgan'
 import { Server as SocketIOServer } from 'socket.io';
+import chatModel from '../database/chatModel'
 const app = express()
 export const httpServer  = http.createServer(app) 
+import ChatRepository from '../repository/chatRepository'
 
+const chatRepo = new  ChatRepository()
 const corsOptions = {
     origin: 'http://localhost:3000', 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -37,58 +40,35 @@ app.use('/api/chat',chatRoutes)
 
 //new part
 
-// const io = new SocketIOServer(httpServer, {
-//     cors: corsOptions,
-//   });
 
-//   io.on('connection', (socket) => {
-//     console.log('A user connected:', socket.id);
-  
-//     socket.on('join-room', (room) => {
-//       socket.join(room);
-//       console.log(`${socket.id} joined room: ${room}`);
-//     });
-  
-//     socket.on('message', ({ room, message }) => {
-//       console.log({ room, message });
-//       io.to(room).emit('receive-message', message);
-//     });
-  
-//     socket.on('disconnect', () => {
-//       console.log('A user disconnected:', socket.id);
-//     });
-//   });
-  
 const io = new SocketIOServer(httpServer, {
-  cors: corsOptions,
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true, 
+  },
 });
-
-
 
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
-  socket.on('join-room', (userIds) => {
-    const room = getRoomId(userIds);
+  socket.on('joinRoom', ({ userId, recipientId }) => {
+    const room = [userId, recipientId].sort().join('-');
     socket.join(room);
-    console.log(`${socket.id} joined room: ${room}`);
+    console.log(`User ${userId} join asyned room: ${room}`);
   });
 
-  socket.on('message', ({ userIds, message }) => {
-    const room = getRoomId(userIds);
-    io.to(room).emit('receive-message', {
-      from: userIds[0], // Assuming sender is the first in the array
-      text: message,
-      room,
-    });
-    console.log(`Message to room ${room}: ${message}`);
+  socket.on('sendMessage', async(message) => {
+    const { senderId, recipientId } = message;
+    const room = [senderId, recipientId].sort().join('-');
+    console.log(`Sending message to room ${room}:`, message);
+
+      const save = await chatRepo.sendMessage(message)
+    io.to(room).emit('receiveMessage', message);
   });
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected:', socket.id);
+    console.log('User disconnected:', socket.id);
   });
 });
 
-function getRoomId(userIds : string[]): string {
-  return userIds.sort().join('-');
-}

@@ -11,5 +11,6 @@ const chatRoutes = express.Router();
 
  chatRoutes.post('/send-message',(req,res,next)=> chatController.sendMessage(req,res,next))
  chatRoutes.get('/get-message',(req,res,next) => chatController.getMessage(req,res,next))
+ chatRoutes.get('/all-chatted-users',(req,res,next) => chatController.chattedUsers(req,res,next))
 
 export default chatRoutes;
