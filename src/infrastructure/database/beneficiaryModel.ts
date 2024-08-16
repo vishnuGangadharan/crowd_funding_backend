@@ -24,6 +24,7 @@ const beneficiarySchema : Schema = new Schema<beneficiary | Document>({
     panNumber:{type:String, required:true},
     userAadharNumber:{type:String, required:true},
     profilePic:{type:[String],required:true},
+    blocked:{type:Boolean, default:false},
     supportingDocs:{type:[String],},
     amount:{type:Number, required:true},
     contributedAmount:{type:Number,default:0},

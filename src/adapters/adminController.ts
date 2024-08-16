@@ -105,6 +105,22 @@ class AdmiController {
     }
 
 
+
+    async blockPost(req: Request, res: Response, next: NextFunction){
+        try {
+            
+            const { postId } = req.body.params;
+            console.log("postId",postId);
+            const response = await this.adminUseCase.blockPost(postId);
+            if(response){
+                return res.status(response.status).json(response.data)
+            }
+        }catch(error){
+            next(error);
+        }
+    }
+
+
    
 }
 

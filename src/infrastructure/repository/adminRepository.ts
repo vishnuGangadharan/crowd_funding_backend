@@ -49,6 +49,11 @@ class AdminRepository implements AdminRepo{
         
     }
 
+    async blockPost(postId: string): Promise<beneficiary | null> {
+        const blockPost = await beneficiaryModel.findByIdAndUpdate(postId,{blocked:true},{new:true})
+        return blockPost 
+    }
+
 
 }
 export default AdminRepository

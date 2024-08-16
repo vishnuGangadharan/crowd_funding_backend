@@ -4,6 +4,7 @@ import beneficiary from "../../domain/beneficiary";
 import { comments } from "../../domain/comment";
 import { PostReport } from "../../domain/postReport";
 import { Donations } from "../../domain/donations";
+import { updates } from "../../domain/interface";
 
 interface  UserRepo{
     findByEmail(email:string): Promise<User | null>;
@@ -27,6 +28,11 @@ interface  UserRepo{
     getDonations(userId:string):Promise<Donations[]>;
     updateContribution(amount:number , beneficiaryId:string):Promise<boolean>
     findReport(userId:string): Promise<PostReport | null>
+    updateBeneficiary(content:string,video:string[],image:string[],postId:string):Promise<boolean>
+    getStatusUpdates(postId:string): Promise<updates[] | null>
+    getCountReport(postId:string): Promise<number | null>
+    amountReached(amount : number ,beneficiaryId :string ) : Promise<{ targetAmount: number, amountRaised: number }>
+    updateFundraiser(userId :string) :Promise<Boolean>
 }
 
 

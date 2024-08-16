@@ -6,11 +6,12 @@ import jwtService from "../infrastructure/services/generateTocken";
 import beneficiary from "../domain/beneficiary";
 import Cloudinary from "../infrastructure/services/cloudinary";
 import User from "../domain/users";
-import { log } from "console";
 import { PasswordData } from "../domain/interface";
 import { PostReport } from "../domain/postReport";
 import Stripe from "stripe";
 import { Donations } from "../domain/donations";
+import messageModel from "../infrastructure/database/chatModel";
+import { ObjectId } from "mongoose";
 
 class UserUseCase {
     private userRepository: UserRepository;
@@ -88,21 +89,19 @@ class UserUseCase {
                 }
             }
         }
-       
 
-        let data: { name: string, email: string, phone?: string, password?:string} = {
+
+        let data: { name: string, email: string, phone?: string, password?: string } = {
             name: findOtp.name,
             email: findOtp?.email,
             phone: findOtp.phone,
-            password:findOtp.password
+            password: findOtp.password
         }
-        console.log(data);
 
         let now = new Date().getTime()
         const otpGeneratedAt = new Date(findOtp.otpGeneratedAt).getTime()
         const otpExpiration = 2 * 60 * 1000; //2mints            
         if (now - otpGeneratedAt > otpExpiration) {
-            console.log("expired");
 
             await this.userRepository.deleteOtpByEmail(email)
             return {
@@ -142,13 +141,13 @@ class UserUseCase {
             }
 
             const token = this.jwtService.generateToken(newUser._id, "user")
-            let refreshToken =  this.jwtService.generateRefreshToken(newUser._id, "user")
+            let refreshToken = this.jwtService.generateRefreshToken(newUser._id, "user")
             return {
                 status: 200,
                 data: data,
                 message: "Google Verified Successfully",
                 token: token,
-                refreshToken:refreshToken
+                refreshToken: refreshToken
             }
         }
 
@@ -164,14 +163,14 @@ class UserUseCase {
 
 
         let token = this.jwtService.generateToken(userData._id, "user")
-        let refreshToken =  this.jwtService.generateRefreshToken(newUser._id, "user")
+        let refreshToken = this.jwtService.generateRefreshToken(newUser._id, "user")
 
         return {
             status: 200,
             data: data,
             message: "OTP Verified Successfully",
             token: token,
-            refreshToken:refreshToken
+            refreshToken: refreshToken
         }
 
 
@@ -218,7 +217,6 @@ class UserUseCase {
                         }
                     }
                 }
-                console.log(passwordMatch);
 
                 if (passwordMatch) {
                     token = this.jwtService.generateToken(user._id, "user")
@@ -263,8 +261,7 @@ class UserUseCase {
     async editProfile(data: User, filePath: string) {
         try {
             const { name, email, phone } = data;
-            console.log("2");
-            console.log(data.email);
+
             if (filePath) {
 
                 const cloudinary = await this.cloudinary.uploadImage(filePath, "profilePicture")
@@ -296,10 +293,8 @@ class UserUseCase {
     async findBeneficiary(data: beneficiary) {
         const { email, name, phone } = data
         const exists = await this.userRepository.verifyBeneficiary(email as string)
-        console.log("finding exixt");
-        
+
         if (exists) {
-            console.log("yes exixt");
 
             return {
                 status: 400,
@@ -309,8 +304,8 @@ class UserUseCase {
                 }
             }
         }
-         else {
-            
+        else {
+
             const otp = this.OTPGenerator.createOTP();
             await this.userRepository.saveOTP(otp, email as string, name, phone);
             this.GenerateMail.sendEmail(email as string, otp)
@@ -326,15 +321,14 @@ class UserUseCase {
     }
 
 
-    async fundRegister(data: beneficiary, fundraiserEmail: string,supportingDocs:string[],profilePic:string[]) {
+    async fundRegister(data: beneficiary, fundraiserEmail: string, supportingDocs: string[], profilePic: string[]) {
         try {
             const currentUserId = await this.userRepository.findByEmail(fundraiserEmail)
-            console.log(currentUserId);
-            
+
             const beneficiaryEmail = data.email
             if (beneficiaryEmail) {
                 const verifyBeneficiary = await this.userRepository.verifyBeneficiary(beneficiaryEmail)
-                
+
                 if (verifyBeneficiary) {
                     return {
                         status: 400,
@@ -346,34 +340,33 @@ class UserUseCase {
                 }
 
             }
-            if(supportingDocs && profilePic){
-                console.log("cloudina");
-                
-                const cloudinary = await this.cloudinary.uploadMultipleimages( profilePic as any, "profilePicture")
+            if (supportingDocs && profilePic) {
+
+                const cloudinary = await this.cloudinary.uploadMultipleimages(profilePic as any, "profilePicture")
                 data.profilePic = cloudinary
 
-                const multiPics = await this.cloudinary.uploadMultipleimages( supportingDocs as any, "supportingDocs")
-                data.supportingDocs  = multiPics 
-            
+                const multiPics = await this.cloudinary.uploadMultipleimages(supportingDocs as any, "supportingDocs")
+                data.supportingDocs = multiPics
 
 
-            if (currentUserId && beneficiaryEmail) {
-                console.log("dataaaa",data);
-                
-                const saveBeneficiary = await this.userRepository.createFundraiser(data, currentUserId._id)
-                if (saveBeneficiary) {
-                    return {
-                        status: 200,
-                        data: {
-                            status: true,
-                            message: "Beneficiary Registered Successfully"
+
+                if (currentUserId && beneficiaryEmail) {
+
+                    const saveBeneficiary = await this.userRepository.createFundraiser(data, currentUserId._id)
+                   const updateUserAsFundraiser = this.userRepository.updateFundraiser(currentUserId._id)
+                    if (saveBeneficiary) {
+                        return {
+                            status: 200,
+                            data: {
+                                status: true,
+                                message: "Beneficiary Registered Successfully"
+                            }
                         }
                     }
+
+
                 }
-
-
             }
-        }
 
         } catch (error) {
             console.log(error);
@@ -415,220 +408,284 @@ class UserUseCase {
         }
     }
 
-    async getPostDetails(userId : string){
+    async getPostDetails(userId: string) {
         const postDetails = await this.userRepository.getPostDetailsById(userId)
-               
-        if(postDetails){
-            return {
-                status :200,
-                data: {
-                    status: true,
-                    data:postDetails
-                }
-            }
-        }
-    }
 
-
-   async addComment(comment :string, postId:string, userId:string){
-        const user = await this.userRepository.findById(userId)
-        const userName = user?.name   
-        const saveComment = await this.userRepository.createComment(comment, userId, postId, userName as string)
-        if(saveComment){
-            return {
-            status:200,
-            data : {
-                status : true,
-                message : "Comment Added Successfully"
-            }
-            } 
-        }
-   }
-
-   
-   async getComments(id:string){
-
-    const allComments = await this.userRepository.getComments(id)
-    if(allComments){
-        return {
-            status : 200,
-             data : {
-                status:true,
-                data: allComments
-             }
-        }
-    }
-
-   }
-
-
-   async allPost(){
-    const posts = await this.userRepository.getAllPost()
-    if(posts){
-        return {
-            status :200,
-            data : {
-                status: true,
-                data: posts,
-            }
-        }
-    }
-   }
-
-   async updatePassword(data :PasswordData , userId:string){
-    try{
-
-        const user = await this.userRepository.findById(userId)
-        
-        if(user && data.newPassword){
-            const match = await this.EncryptPassword.compare(data.currentPassword, user.password)
-            console.log("match",match);
-            
-            if(match){
-                const hashedPassword = await this.EncryptPassword.encryptPassword(data.newPassword)
-                const updateUser = await this.userRepository.updatePassword(hashedPassword,userId)
-                console.log("ss");
-                
-                if(updateUser){
-                    console.log("done");
-                    
-                    return {
-                        status: 200,
-                        data: {
-                            status : true,
-                            message: "updated successfully"
-                        }
-                    }
-                }
-                
-            }else{
-                return{
-                    status: 400,
-                    data: {
-                        status: false,
-                        message: "current password not match"
-                    }
-                }
-                
-            }
-        }
-        
-    }catch(error){
-        console.log(error);
-        
-    }
-   }
-
-
-async reportPost(reportData: PostReport) {
-
-    if(reportData.image){
-        const cloudinary = await this.cloudinary.uploadImage(reportData.image, "reportImage")
-        reportData.image = cloudinary
-    }
-    const post = await this.userRepository.findPostById(reportData.postId as unknown as string)
-    const allReadyReported = await this.userRepository.findReport(reportData.userId as any)
-    if(allReadyReported){
-        
-        return {
-            status:400,
-            data:{
-                status:false,
-                message: "Your report has been already submitted"
-            }
-        }        
-    }
-
-    if (post && !allReadyReported) {
-        const saveReport = await this.userRepository.createReport(reportData)
-        if (saveReport) {
+        if (postDetails) {
             return {
                 status: 200,
                 data: {
                     status: true,
-                    message: "Reported Successfully"
+                    data: postDetails
                 }
             }
         }
     }
-    return {
-        status: 401,
-        data: {
-            status: false,
-            message: "Post not found or report not saved"
-        }
-    }
-}
-
-async setPayment(data: Donations) {
-    let amount = data.amount
-    
-    const stripeKey = process.env.STRIPE_KEY;
-    if (!stripeKey) {
-        throw new Error('Stripe key is not defined');
-    }
-    const stripe = new Stripe(stripeKey);
-
-    const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        line_items: [
-          {
-            price_data: {
-              currency: "usd",
-              product_data: {
-                name: "Premium Subscription",
-              },
-              unit_amount: data.amount * 100,
-            },
-            quantity: 1,
-          },
-        ],
-        mode: "payment",
-        success_url: `http://localhost:3000/postdetails/${data.beneficiaryId}`,
-        cancel_url: "http://localhost:5173/company",
-        // customer_email: email,
-         billing_address_collection: "auto"
-      });
-      const saveDonation = await this.userRepository.saveDonation(data)
-      const updateContribution = await this.userRepository.updateContribution(data.amount as number,data.beneficiaryId as any)
-      console.log("saved");
-      
-  if(session){
-    return { 
-        status : 200,
-        data : {
-            status : true,
-            data : session.id
-        }
-    }
-  }
-}
 
 
-async getDonations(beneficiaryId: string){
-    try{
-
-        const donations = await this.userRepository.getDonations(beneficiaryId)
-        
-        if(donations){
+    async addComment(comment: string, postId: string, userId: string) {
+        const user = await this.userRepository.findById(userId)
+        const userName = user?.name
+        const saveComment = await this.userRepository.createComment(comment, userId, postId, userName as string)
+        if (saveComment) {
             return {
-                status : 200,
-                data : {
-                    status : true,
-                    data : donations
+                status: 200,
+                data: {
+                    status: true,
+                    message: "Comment Added Successfully"
+                }
+            }
+        }
+    }
+
+
+    async getComments(id: string) {
+
+        const allComments = await this.userRepository.getComments(id)
+        if (allComments) {
+            return {
+                status: 200,
+                data: {
+                    status: true,
+                    data: allComments
                 }
             }
         }
 
-    }catch(error){
-        console.log(error);
+    }
+
+
+    async allPost() {
+        const posts = await this.userRepository.getAllPost()
+        if (posts) {
+            return {
+                status: 200,
+                data: {
+                    status: true,
+                    data: posts,
+                }
+            }
+        }
+    }
+
+    async updatePassword(data: PasswordData, userId: string) {
+        try {
+
+            const user = await this.userRepository.findById(userId)
+
+            if (user && data.newPassword) {
+                const match = await this.EncryptPassword.compare(data.currentPassword, user.password)
+                if (match) {
+                    const hashedPassword = await this.EncryptPassword.encryptPassword(data.newPassword)
+                    const updateUser = await this.userRepository.updatePassword(hashedPassword, userId)
+
+                    if (updateUser) {
+
+                        return {
+                            status: 200,
+                            data: {
+                                status: true,
+                                message: "updated successfully"
+                            }
+                        }
+                    }
+
+                } else {
+                    return {
+                        status: 400,
+                        data: {
+                            status: false,
+                            message: "current password not match"
+                        }
+                    }
+
+                }
+            }
+
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
+
+
+    async reportPost(reportData: PostReport) {
+
+        if (reportData.image) {
+            const cloudinary = await this.cloudinary.uploadImage(reportData.image, "reportImage")
+            reportData.image = cloudinary
+        }
+        const post = await this.userRepository.findPostById(reportData.postId as unknown as string)
+        const allReadyReported = await this.userRepository.findReport(reportData.userId as any)
+        if (allReadyReported) {
+
+            return {
+                status: 400,
+                data: {
+                    status: false,
+                    message: "Your report has been already submitted"
+                }
+            }
+        }
+        const count = await this.userRepository.getCountReport(reportData.postId as unknown as string)
+        console.log("count",count);
+        reportData.count = (count ?? 0) + 1
+        
+        if (post && !allReadyReported) {
+            const saveReport = await this.userRepository.createReport(reportData)
+            if (saveReport) {
+                return {
+                    status: 200,
+                    data: {
+                        status: true,
+                        message: "Reported Successfully"
+                    }
+                }
+            }
+        }
+        return {
+            status: 401,
+            data: {
+                status: false,
+                message: "Post not found or report not saved"
+            }
+        }
+    }
+
+    async setPayment(data: Donations) {
+        let amount = data.amount
+
+        const stripeKey = process.env.STRIPE_KEY;
+        if (!stripeKey) {
+            throw new Error('Stripe key is not defined');
+        }
+        const stripe = new Stripe(stripeKey);
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            line_items: [
+                {
+                    price_data: {
+                        currency: "usd",
+                        product_data: {
+                            name: "Donation amount",
+                        },
+                        unit_amount: data.amount * 100,
+                    },
+                    quantity: 1,
+                },
+            ],
+            mode: "payment",
+            success_url: `http://localhost:3000/postdetails/${data.beneficiaryId}`,
+            cancel_url: `http://localhost:3000/postdetails/${data.beneficiaryId}`,
+            // customer_email: email,
+            billing_address_collection: "auto"
+        });
+        const amountCheck = await this.userRepository.amountReached(data.amount as number, data.beneficiaryId as any)
+        let total = amountCheck?.amountRaised + data.amount
+        if(total >= amountCheck.targetAmount){
+            return {
+                status : 400,
+                data : {
+                    status : false,
+                    message : "Amount is greater than target amount"
+                }
+            }
+        }
+        
+    
+        const saveDonation = await this.userRepository.saveDonation(data)
+        const updateContribution = await this.userRepository.updateContribution(data.amount as number, data.beneficiaryId as any)
+        console.log("saved");
+
+        if (session) {
+            return {
+                status: 200,
+                data: {
+                    status: true,
+                    data: session.id
+                }
+            }
+        }
+    }
+
+
+    async getDonations(beneficiaryId: string) {
+        try {
+
+            const donations = await this.userRepository.getDonations(beneficiaryId)
+
+            if (donations) {
+                return {
+                    status: 200,
+                    data: {
+                        status: true,
+                        data: donations
+                    }
+                }
+            }
+
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
+
+
+
+    async updateBeneficiary(content?: string, video?: string[], image?: string[], postId?: string) {
+        try {
+            if (image) {
+                console.log("inside image", image);
+
+                const cloudinary = await this.cloudinary.uploadMultipleimages(image as any, "updates")
+                image = cloudinary
+            }
+            if (video) {
+                console.log("inside video", video);
+                const cloudinary = await this.cloudinary.uploadVideo(video as any, "updates")
+                video = cloudinary as any
+            }
+
+            const updateBeneficiary = await this.userRepository.updateBeneficiary(content, video, image, postId)
+            if (updateBeneficiary) {
+                return {
+                    status: 200,
+                    data: {
+                        status: true,
+                        message: "updated successfully"
+                    }
+                }
+            }
+
+
+        } catch (error) {
+            console.log(error);
+        }
+
 
     }
-}
+
+
+    async statusUpdates(postId: string) {
+        try {
+            const statusUpdates = await this.userRepository.getStatusUpdates(postId)
+            if (statusUpdates) {
+                return {
+                    status: 200,
+                    data: {
+                        status: true,
+                        data: statusUpdates
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
 
 }
-
 
 
 

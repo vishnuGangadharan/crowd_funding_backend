@@ -55,20 +55,24 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', ({ userId, recipientId }) => {
     const room = [userId, recipientId].sort().join('-');
     socket.join(room);
-    console.log(`User ${userId} join asyned room: ${room}`);
+    console.log(`User ${userId} joined room: ${room}`);
   });
 
-  socket.on('sendMessage', async(message) => {
-    const { senderId, recipientId } = message;
+  socket.on('sendMessage', async (message) => {
+    const { senderId, recipientId, message: text } = message;
+
     const room = [senderId, recipientId].sort().join('-');
     console.log(`Sending message to room ${room}:`, message);
 
-      const save = await chatRepo.sendMessage(message)
-    io.to(room).emit('receiveMessage', message);
+    try {
+      const save = await chatRepo.sendMessage(message); // Save the message to the database
+      io.to(room).emit('receiveMessage', message); // Emit the message to the room
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
   });
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
 });
-

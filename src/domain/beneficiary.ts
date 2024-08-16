@@ -51,5 +51,6 @@ interface beneficiary{
     fundraisingFor?:string;
     category?:string;
     bio?:string;
+    blocked?:boolean;
 }
 export default beneficiary

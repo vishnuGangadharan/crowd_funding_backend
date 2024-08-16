@@ -17,5 +17,7 @@ routes.get("/campaign-request",(req,res,next)=>adminController.getRequest(req,re
 routes.post("/post-approval", (req,res,next) => adminController.postApproval(req, res, next))
 routes.get('/all-reports', (req,res,next) => adminController.getAllReports(req,res,next))
 routes.get('/post-details', (req,res,next)=> adminController.getPostDetails(req,res,next));
+routes.post('/block-post', (req,res,next) => adminController.blockPost(req,res,next))
+
 
 export default routes

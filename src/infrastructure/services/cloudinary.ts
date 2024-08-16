@@ -55,6 +55,42 @@ cloudinary.config({
         }
     }
 
+
+    async uploadVideo(video: any, folderName: string): Promise<string | string[]> {
+        try {
+          // Check if the input is an array (multiple videos)
+          if (Array.isArray(video)) {
+            // Handle multiple video uploads
+            const uploadPromises = video.map(async (singleVideo) => {
+              const uploadResult = await cloudinary.uploader.upload(singleVideo, {
+                folder: `${folderName}`,
+                resource_type: 'video',
+              });
+              return uploadResult.secure_url;
+            });
+            const uploadedUrls = await Promise.all(uploadPromises);
+            return uploadedUrls; // Return an array of URLs
+          } else {
+            // Handle single video upload
+            const uploadResult = await cloudinary.uploader.upload(video, {
+              folder: `${folderName}`,
+              resource_type: 'video',
+            });
+            return uploadResult.secure_url; // Return a single URL
+          }
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error("Error uploading video to Cloudinary", error.message);
+          } else {
+            console.error("Error uploading video to Cloudinary", String(error));
+          }
+          throw error;
+        }
+      }
+    
+           
+
+
  }
 
 

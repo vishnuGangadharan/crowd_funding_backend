@@ -42,7 +42,8 @@ class ChatController {
 
     async chattedUsers(req:Request, res: Response , next: NextFunction) {
         try{
-            let senderId = req.query.id
+            
+            let senderId = req.query.userID as string;
             const response = await this.chatUseCase.chattedUsers(senderId as string)
             console.log("response",response);
             if(response) res.status(response.status).json(response.data)

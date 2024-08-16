@@ -146,5 +146,22 @@ async getPostDetails(userId : string){
     }
 }
 
+async blockPost(postId:string){
+    const blockPost = await this.adminRepository.blockPost(postId)
+    console.log("block",blockPost);
+    const splitContributionToDonators = 
+    if(blockPost){
+        return {
+            status :200,
+            data: {
+                status: true,
+                message: "Post blocked successfully"
+            }
+        }
+    }
+}
+
+
+
 }
 export default AdminUsecase

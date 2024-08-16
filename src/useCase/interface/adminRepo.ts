@@ -8,6 +8,7 @@ interface AdminRepo{
     getRequest():Promise<beneficiary[]>;
     updateStatus(postId:string, status:string): Promise<beneficiary | null>
     getallReports():Promise < PostReport[] | null>;
+    blockPost(postId:string): Promise<beneficiary | null>;
 }
 
 export default AdminRepo;
