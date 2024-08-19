@@ -1,4 +1,4 @@
-import User from "../../domain/users";
+import User, { walletType } from "../../domain/users";
 import UserRepo from "../../useCase/interface/userRepo";
 import UserModel from "../database/userModel";
 import OTPModel from "../database/otpModel";
@@ -13,6 +13,7 @@ import { Donations } from "../../domain/donations";
 import DonationModel from "../database/donationsModel";
 import updateModel from "../database/beneficiaryUpdateModel";
 import { updates } from "../../domain/interface";
+import walletModel from "../database/wallet";
 class UserRepository implements UserRepo {
 
 
@@ -130,6 +131,8 @@ class UserRepository implements UserRepo {
               blocked :false
              }
         ).populate('fundraiser').exec();
+        console.log('post',posts);
+        
         return posts;
     }
 
@@ -188,6 +191,13 @@ class UserRepository implements UserRepo {
             console.error('Error fetching beneficiary amounts:', error);
             throw error;
         }
+    }
+
+    async checkWallet(amount:number, userId: string): Promise<boolean | null> {
+        const wallet = await walletModel.findOne({userId})
+        console.log("dddddddd",wallet);
+        
+        return wallet && wallet.balance >= amount
     }
 
 
@@ -252,6 +262,18 @@ class UserRepository implements UserRepo {
         const statusUpdates = await updateModel.find({ postId: postId });
         return statusUpdates;
     }
+
+
+    async getWallet(userId: string): Promise<walletType[]> {
+     const wallet = await walletModel.find({ userId: userId })
+     .populate('userId')
+     .populate({
+        path:'transactions.beneficiary',
+        model: 'beneficiary'
+     }).exec();
+     return wallet;
+    }
+
 }
 
 export default UserRepository

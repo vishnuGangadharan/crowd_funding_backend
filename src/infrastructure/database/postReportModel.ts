@@ -12,6 +12,11 @@ const postReportSchema = new Schema<PostReport>({
         ref: 'User',
         required: true
     },
+    // blocked: {
+    //     type:Boolean,
+    //     default:false,
+    //     required :false
+    // },  
     reason: {
         type: String,
         required: true

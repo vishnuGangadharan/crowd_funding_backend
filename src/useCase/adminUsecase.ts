@@ -119,6 +119,7 @@ async approvalPost(postId :string, status:string){
 
 async allReports(){
     const allReport = await this.adminRepository.getallReports()
+
    
     if(allReport){
         return {
@@ -148,8 +149,14 @@ async getPostDetails(userId : string){
 
 async blockPost(postId:string){
     const blockPost = await this.adminRepository.blockPost(postId)
-    console.log("block",blockPost);
-    const splitContributionToDonators = 
+
+    console.log("block",);blockPost
+    const donations  = await this.adminRepository.refundAllDonations(postId)
+    if(donations){
+        const deleteDonations = await this.adminRepository.deleteDonations(postId)
+     }
+    
+    // const splitContributionToDonators = 
     if(blockPost){
         return {
             status :200,

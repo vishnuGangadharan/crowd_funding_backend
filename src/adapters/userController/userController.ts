@@ -294,6 +294,7 @@ class UserController {
                 reason,
                 comment,
                 image: file ? file.path : null,
+                
             };
 
 
@@ -311,12 +312,13 @@ class UserController {
     //payment
     async setPayment(req: Request, res: Response, next: NextFunction) {
         try {
-            const { amount, anonymousName, userId, beneficiaryId } = req.body;
+            const { amount, anonymousName, userId, beneficiaryId, method } = req.body;
             const paymentData = {
                 amount,
                 anonymousName,
                 userId,
-                beneficiaryId
+                beneficiaryId,
+                method
             };
 
             const response = await this.userUseCase.setPayment(paymentData as Donations);
@@ -329,6 +331,27 @@ class UserController {
         }
     }
 
+
+    async walletPayment(req: Request, res: Response, next: NextFunction) {
+        try{
+            const { amount, anonymousName, userId, beneficiaryId, method } = req.body;
+            const paymentData = {
+                amount,
+                anonymousName,
+                userId,
+                beneficiaryId,
+                method
+            };
+
+            const response = await this.userUseCase.walletPayment(paymentData as Donations);
+            if(response){
+                return res.status(response.status).json(response.data);
+            }
+            
+        }catch(error){
+            next(error);
+        }
+    }
 
 
     async getDonations(req: Request, res: Response, next: NextFunction) {
@@ -389,7 +412,22 @@ class UserController {
             next(error);
         }
     }
+ 
 
+    async getWallet(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.query.userId as string;
+            console.log('userId', userId);
+            
+            const response = await this.userUseCase.getWallet(userId);
+            if(response){
+                return res.status(response.status).json(response.data)
+            }
+            
+        } catch (error) {
+            next(error);
+        }
+    }
 
 
 

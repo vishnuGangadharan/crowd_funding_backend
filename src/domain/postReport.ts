@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import beneficiary from "./beneficiary";
 export interface PostReport {
     postId?: mongoose.Types.ObjectId;
     userId?: mongoose.Types.ObjectId;
@@ -9,4 +9,5 @@ export interface PostReport {
     updatedAt?: Date;
     image? : string | null;
     count? : number | undefined;
+    beneficiary?:beneficiary
 }

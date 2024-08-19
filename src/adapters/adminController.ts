@@ -81,6 +81,8 @@ class AdmiController {
 
     async getAllReports(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("getall post");
+            
             const allReports = await this.adminUseCase.allReports();
             if (allReports && allReports.status) {
                 return res.status(allReports.status).json(allReports.data);
@@ -108,8 +110,11 @@ class AdmiController {
 
     async blockPost(req: Request, res: Response, next: NextFunction){
         try {
+            console.log("gggg");
             
-            const { postId } = req.body.params;
+            const { postId } = req.body;
+                
+                
             console.log("postId",postId);
             const response = await this.adminUseCase.blockPost(postId);
             if(response){

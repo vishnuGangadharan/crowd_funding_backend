@@ -610,6 +610,51 @@ class UserUseCase {
     }
 
 
+    async walletPayment(data: Donations) {
+        const checkWallet = await this.userRepository.checkWallet(data.amount as number , data.userId as string)
+        if(!checkWallet){
+            console.log('noooo');
+            
+            return {
+                status : 400,
+                data : {
+                    status : false,
+                    message : "Insufficient balance"
+                }
+            }
+        } 
+        
+
+        const amountCheck = await this.userRepository.amountReached(data.amount as number, data.beneficiaryId as string)
+        let total = amountCheck?.amountRaised + data.amount
+        if(total >= amountCheck.targetAmount){
+            return {
+                status : 400,
+                data : {
+                    status : false,
+                    message : "Amount is greater than target amount"
+                }
+            }
+        }
+        
+    
+        const saveDonation = await this.userRepository.saveDonation(data)
+        const updateContribution = await this.userRepository.updateContribution(data.amount as number, data.beneficiaryId as any)
+        console.log("saved");
+        return {
+            status : 200,
+            data : {
+                status : true,
+                message : "Payment Successfully"
+            }
+        }
+
+        
+
+    }
+
+
+
     async getDonations(beneficiaryId: string) {
         try {
 
@@ -680,6 +725,23 @@ class UserUseCase {
                 }
             }
         } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    async getWallet(userId : string){
+        try{
+            const getWallet = await this.userRepository.getWallet(userId)
+            return {
+                status: 200,
+                data :{
+                    status: true,
+                     data : getWallet
+                }
+            }
+            
+        }catch(error){
             console.log(error);
         }
     }

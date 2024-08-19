@@ -1,4 +1,4 @@
-import User from "../../domain/users";
+import User, { walletType } from "../../domain/users";
 import OTP from "../../domain/otp";
 import beneficiary from "../../domain/beneficiary";
 import { comments } from "../../domain/comment";
@@ -33,6 +33,9 @@ interface  UserRepo{
     getCountReport(postId:string): Promise<number | null>
     amountReached(amount : number ,beneficiaryId :string ) : Promise<{ targetAmount: number, amountRaised: number }>
     updateFundraiser(userId :string) :Promise<Boolean>
+    getWallet(userId:string):Promise<walletType[]>;
+    checkWallet(amount:number, userId:string ):Promise<boolean | null>;
+
 }
 
 

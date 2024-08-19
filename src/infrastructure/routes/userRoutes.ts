@@ -48,5 +48,7 @@ routes.post('/get-session-id',userAuth, (req, res, next) => userController.setPa
 routes.get('/get-donations',userAuth,(req,res,next) => userController.getDonations(req,res,next));
 routes.post('/update-beneficiary',upload.fields([{name: 'imagesUpdate', maxCount: 2}, {name : 'videosUpdate', maxCount: 2}]), userAuth,(req,res,next) => userController.updateBeneficiary(req,res,next))
 routes.get('/status-updates', userAuth, (req,res,next) => userController.getStatusUpdates(req,res,next))
+routes.get('/get-wallet', userAuth,(req,res,next) => userController.getWallet(req,res,next))
+routes.post('/wallet-payment',userAuth,(req,res,next) => userController.walletPayment(req,res,next))
 
 export default routes;

@@ -20,6 +20,12 @@ const donationSchema = new Schema <Donations>({
     anonymousName: {
         type: String,
         required: true
+    },
+    method : {
+        type: String,
+         enum: ['card', 'wallet'],
+         required: true,
+         
     }
 },{timestamps:true})
 

@@ -1,4 +1,6 @@
-interface User{
+import mongoose from "mongoose";
+
+ interface User{
     _id:string;
     name:string;
     email:string;
@@ -14,3 +16,14 @@ interface User{
 
 
 export default User;
+
+export interface walletType{
+    userId: mongoose.Types.ObjectId | string;
+    balance:number;
+    transactions: {
+        beneficiary: mongoose.Types.ObjectId | string;
+        description: string;
+        type: string; //debit/credit
+        amount: number;
+    }[];
+}

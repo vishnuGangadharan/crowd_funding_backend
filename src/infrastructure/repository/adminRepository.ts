@@ -1,9 +1,12 @@
 import beneficiary from "../../domain/beneficiary"
+import { Donations } from "../../domain/donations"
 import { PostReport } from "../../domain/postReport"
 import AdminRepo from "../../useCase/interface/adminRepo"
 import beneficiaryModel from "../database/beneficiaryModel"
+import DonationModel from "../database/donationsModel"
 import PostReportModel from "../database/postReportModel"
 import UserModel from "../database/userModel"
+import walletModel from "../database/wallet"
 
 class AdminRepository implements AdminRepo{
 
@@ -38,7 +41,7 @@ class AdminRepository implements AdminRepo{
     }
 
     async getallReports(): Promise<PostReport[] | null> {
-        const allReport = await PostReportModel.find({})
+        const allReport = await PostReportModel.find({}).populate('postId').exec()        
         return allReport
 
     }
@@ -54,6 +57,51 @@ class AdminRepository implements AdminRepo{
         return blockPost 
     }
 
+
+    async refundAllDonations(postId: string): Promise<boolean | null> {
+        try {
+            const donations = await DonationModel.find({beneficiaryId:postId})
+        
+            if(donations && donations.length > 0){
+                
+                for(const donation of donations){
+                    let wallet = await walletModel.findOne({userId: donation.userId})
+                    console.log("walllettt",wallet);
+                    
+                    if(!wallet){
+                       wallet = new walletModel({
+                        userId : donation.userId,
+                        balance:0,
+                        transactions:[]
+                       })
+                       console.log(`Created new wallet for userId: ${donation.userId}`);
+
+                    } 
+                        wallet.transactions.push({
+                            beneficiary: donation.beneficiaryId,
+                            amount:donation.amount,
+                            type:'credit',
+                            description: `Refund for blocked beneficiary campaign of `
+                        })
+                        wallet.balance += donation.amount
+                    
+                    const savedWallet = await wallet?.save();
+                                console.log('Wallet saved successfully:', savedWallet);
+
+                }
+            }
+        
+            return donations? true :false
+        } catch(error) {
+            console.log(error)
+            return null
+        }
+    }
+    
+    async deleteDonations(postId: string): Promise<void> {
+        await DonationModel.deleteMany({beneficiaryId:postId})
+        await beneficiaryModel.findByIdAndUpdate(postId,{contributedAmount:0})
+    }
 
 }
 export default AdminRepository
