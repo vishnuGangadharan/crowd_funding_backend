@@ -169,6 +169,19 @@ async blockPost(postId:string){
 }
 
 
+async getFundRequest(){
+    const response = await this.adminRepository.getFundRequest()
+    if(response){
+        return {
+            status:200,
+            data:{
+                status:true,
+                data:response,
+            }
+        }
+    }
+}
+
 
 }
 export default AdminUsecase

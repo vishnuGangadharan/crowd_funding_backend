@@ -50,5 +50,5 @@ routes.post('/update-beneficiary',upload.fields([{name: 'imagesUpdate', maxCount
 routes.get('/status-updates', userAuth, (req,res,next) => userController.getStatusUpdates(req,res,next))
 routes.get('/get-wallet', userAuth,(req,res,next) => userController.getWallet(req,res,next))
 routes.post('/wallet-payment',userAuth,(req,res,next) => userController.walletPayment(req,res,next))
-
+routes.put('/requesting-fund',userAuth,(req,res,next) => userController.makeRequestForFund( req,res,next))
 export default routes;

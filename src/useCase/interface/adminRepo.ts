@@ -12,7 +12,7 @@ interface AdminRepo{
     blockPost(postId:string): Promise<beneficiary | null>;
     refundAllDonations(postId:string):Promise<boolean | null>;
     deleteDonations(postId:string) :Promise<void>
-
+    getFundRequest():Promise<beneficiary[] | undefined>;
     
 }
 

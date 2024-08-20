@@ -35,6 +35,7 @@ interface  UserRepo{
     updateFundraiser(userId :string) :Promise<Boolean>
     getWallet(userId:string):Promise<walletType[]>;
     checkWallet(amount:number, userId:string ):Promise<boolean | null>;
+    makeFundRequest(id: string): Promise<boolean>
 
 }
 

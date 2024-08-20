@@ -274,6 +274,21 @@ class UserRepository implements UserRepo {
      return wallet;
     }
 
+
+    async makeFundRequest(id: string): Promise<boolean> {
+        try {
+            const update = await beneficiaryModel.findByIdAndUpdate(
+                id,
+                { requestedAmount: true },
+                { new: true }
+            );
+            return update ? true : false;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
 }
 
 export default UserRepository

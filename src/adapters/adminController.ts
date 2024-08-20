@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import AdminUseCase from '../useCase/adminUsecase';
 
 
-class AdmiController {
+class AdminController {
     private adminUseCase: AdminUseCase;
 
     constructor(
@@ -126,7 +126,17 @@ class AdmiController {
     }
 
 
+    async getFundRequest(req: Request, res: Response, next: NextFunction) {
+        try {
+            const response = await this.adminUseCase.getFundRequest()
+            if(response){
+                return res.status(response.status).json(response.data)
+            }
+        }catch(error){
+            next(error);
+        }
+    }
    
 }
 
-export default AdmiController
+export default AdminController

@@ -429,6 +429,17 @@ class UserController {
         }
     }
 
+    async makeRequestForFund(req: Request, res: Response, next: NextFunction){
+        try{
+            const {id} = req.body 
+            const makeFundRequest = await this.userUseCase.makeFundRequest(id)
+            if(makeFundRequest){
+                return res.status(makeFundRequest.status).json(makeFundRequest.data)
+            }
+        }catch(error){
+            next(error);
+        }
+    }
 
 
 }

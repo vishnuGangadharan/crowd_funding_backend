@@ -747,6 +747,27 @@ class UserUseCase {
     }
 
 
+    async makeFundRequest(id:string){
+        try{
+
+            const makeFundRequest = await this.userRepository.makeFundRequest(id)
+            if(makeFundRequest){
+                return{
+                    status: 200,
+                     data : {
+                        status : true,
+                        message : "Request sent successfully"
+                     }
+                }
+
+            }
+        }catch(error){
+            console.log(error);
+            
+        }
+    }
+
+
 }
 
 

@@ -32,6 +32,7 @@ interface beneficiary{
     phone?:string;
     gender?:string;
     panNumber?:string;
+    requestedAmount?:boolean;
     userAadharNumber?: string;
     description?: string;
     profilePic?: string[];
@@ -52,5 +53,6 @@ interface beneficiary{
     category?:string;
     bio?:string;
     blocked?:boolean;
+    targetDateFinished:boolean;
 }
 export default beneficiary

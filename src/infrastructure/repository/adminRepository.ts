@@ -103,5 +103,16 @@ class AdminRepository implements AdminRepo{
         await beneficiaryModel.findByIdAndUpdate(postId,{contributedAmount:0})
     }
 
+    async getFundRequest(): Promise<beneficiary[] | undefined> {
+        try{
+
+            const getFundRequest = await beneficiaryModel.find({requestedAmount:true})
+            return getFundRequest
+
+        }catch(error){
+            console.log(error)
+        }
+    }
+
 }
 export default AdminRepository
