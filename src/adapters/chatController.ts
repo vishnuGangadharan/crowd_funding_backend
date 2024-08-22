@@ -11,7 +11,14 @@ class ChatController {
 
     async sendMessage(req: Request, res: Response, next: NextFunction) {
         try {
-
+            console.log('kittiyi');
+            if (req.files && 'file' in req.files) {
+                const file = req.files.file;
+                console.log("ssssss",file);
+                
+            }
+            console.log("ddddd",req.file);
+            
 
             const {senderId, recipientId, message } = req.body;
             console.log("seder",senderId, " receiver", recipientId,"message", message);

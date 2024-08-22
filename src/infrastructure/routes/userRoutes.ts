@@ -11,6 +11,7 @@ const routes = express.Router();
 import  { Request, Response, NextFunction } from 'express';
 import Cloudinary from '../services/cloudinary';
 import { userAuth } from '../middileware/userAuth';
+import errorHandle from '../middileware/errorHandle';
 //services
 const otpGenerator = new OTPGenerator();
 const encryptPassword = new EncryptPassword();
@@ -51,4 +52,7 @@ routes.get('/status-updates', userAuth, (req,res,next) => userController.getStat
 routes.get('/get-wallet', userAuth,(req,res,next) => userController.getWallet(req,res,next))
 routes.post('/wallet-payment',userAuth,(req,res,next) => userController.walletPayment(req,res,next))
 routes.put('/requesting-fund',userAuth,(req,res,next) => userController.makeRequestForFund( req,res,next))
+
+routes.use(errorHandle)
+
 export default routes;

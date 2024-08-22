@@ -6,9 +6,10 @@ export interface chatTypes {
     recipientId?:mongoose.Types.ObjectId | string;
   message?: string;
   media?: string;  
-  messageType?: 'text' | 'image' | 'video';
+  messageType?: 'text'| 'image' | 'video' | 'audio' | 'file';
   timestamp?: Date;
-  status? : number
+  status? : number;
+  mediaUrl?: string;
 }
 
 

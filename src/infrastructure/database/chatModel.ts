@@ -17,9 +17,15 @@ const chatSchema: Schema = new Schema({
     },
     messageType : {
         type : String,
-        enum : ['text', 'image', 'video' ],
+        enum : ['text', 'image', 'video', 'audio', 'file'],
         required: true,
         default : 'text'
+    },
+    mediaUrl : {
+        type:String,
+        required: function(this: { messageType: 'text' | 'image' | 'video' | 'audio' | 'file' }) {
+            return this.messageType !=='text';
+        }
     }
 },{timestamps: true})
 

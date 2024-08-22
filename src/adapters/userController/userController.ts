@@ -21,18 +21,17 @@ class UserController {
         try {
             console.log("req.body", req.body);
 
-            const varifyUser = await this.userUseCase.checkAlreadyExist(req.body.email);
+            const verifyUser = await this.userUseCase.checkAlreadyExist(req.body.email);
 
-            if (varifyUser.data.status === true && req.body.isGoogle) {
+            if (verifyUser.data.status === true && req.body.isGoogle) {
                 const user = await this.userUseCase.verifyOtpUser(req.body)
-                console.log("userllllllllll", user);
 
                 return res.status(user.status).json(user.data)
 
             }
 
 
-            if (varifyUser.data.status === true) {
+            if (verifyUser.data.status === true) {
                 const sendOTP = await this.userUseCase.signup(
                     req.body.email,
                     req.body.name,
@@ -43,7 +42,7 @@ class UserController {
                 return res.status(sendOTP.status).json(sendOTP.data);
 
             } else {
-                return res.status(varifyUser.status).json(varifyUser.data)
+                return res.status(verifyUser.status).json(verifyUser.data)
             }
         } catch (error) {
             next(error);
