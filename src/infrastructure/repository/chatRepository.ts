@@ -1,3 +1,4 @@
+import { create } from "domain";
 import { chatTypes, PopulatedChat } from "../../domain/chatMessage";
 import ChatRepo from "../../useCase/interface/chatRepo";
 import messageModel from "../database/chatModel";
@@ -38,7 +39,9 @@ class ChatRepository implements ChatRepo{
           ],
         })
         .populate('senderId', 'name profilePicture')
-        .populate('recipientId', 'name profilePicture');
+        .populate('recipientId', 'name profilePicture')
+        .sort({ createdAt: -1 });
+        
     
         const users = new Map<string, { _id: string; name: string; profilePicture: string }>();
     

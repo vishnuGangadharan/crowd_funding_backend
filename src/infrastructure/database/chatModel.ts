@@ -23,9 +23,9 @@ const chatSchema: Schema = new Schema({
     },
     mediaUrl : {
         type:String,
-        required: function(this: { messageType: 'text' | 'image' | 'video' | 'audio' | 'file' }) {
-            return this.messageType !=='text';
-        }
+        required: function(this: Document & { messageType: 'text' | 'image' | 'video' | 'audio' | 'file', mediaUrl: string }) {
+            return this.messageType !== 'text'; // Required if messageType is not 'text'
+        },
     }
 },{timestamps: true})
 

@@ -1,18 +1,38 @@
 import { chatTypes } from "../domain/chatMessage"
 import ChatRepository from "../infrastructure/repository/chatRepository"
+import Cloudinary from "../infrastructure/services/cloudinary";
+
 class ChatUseCase {
     private chatRepository: ChatRepository;
-    constructor(chatRepository: ChatRepository) {
+    private cloudinary: Cloudinary;
+    constructor(
+        chatRepository: ChatRepository,
+        cloudinary: Cloudinary,
+    ) {
         this.chatRepository = new ChatRepository();
+        this.cloudinary =  cloudinary
     }
 
-    async sendMessage(senderId: string, recipientId: string, message: string): Promise<string | null> {   
+    async sendMessage(senderId: string, recipientId: string, message?: string, fileType?:'text'| 'image' | 'video' | 'audio' | 'file',path?:string): Promise<string | null> {   
         console.log('chat use case', senderId, recipientId, message);
+        let cloudinary: string | undefined;
+        if (path && fileType) {
+            if (fileType === 'image') {
+                cloudinary = await this.cloudinary.uploadImage(path, 'message');
+            } else if (fileType === 'video') {
+                cloudinary = await this.cloudinary.uploadSingleVideo(path, 'message');
+            }else if(fileType === 'audio'){
+                cloudinary = await this.cloudinary.uploadAudio(path, 'message');
+            }
+        }
         
-        const data = {
+        
+        
+        const data : chatTypes= {
             senderId,
             recipientId,
-            message
+            message : message ,
+            ...(cloudinary && {mediaUrl:cloudinary, messageType:fileType})
         }
         const response = await this.chatRepository.sendMessage(data as chatTypes);
         

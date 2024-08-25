@@ -87,9 +87,43 @@ cloudinary.config({
           throw error;
         }
       }
-    
-           
 
+
+
+      async uploadSingleVideo(video: any, folderName: string): Promise<string> {
+        try {
+          const uploadResult = await cloudinary.uploader.upload(video, {
+            folder: `${folderName}`,
+            resource_type: 'video',
+          });
+          return uploadResult.secure_url; 
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            console.error("Error uploading single video to Cloudinary", error.message);
+          } else {
+            console.error("Error uploading single video to Cloudinary", String(error));
+          }
+          throw error;
+        }
+      }
+
+
+      async uploadAudio(audio: any, folderName: string): Promise<string>{
+        try{
+           const uploadResult = await cloudinary.uploader.upload(audio, {
+            folder: `${folderName}`,
+            resource_type: 'raw',
+           })
+           return uploadResult.secure_url
+        }catch(error: unknown){
+            if(error instanceof Error){
+                console.error("Error uploading audio to cloudinary", error.message);
+            }else{
+                console.error("Error uploading audio to cloudinary", String(error));
+            }
+            throw error
+        }
+      }
 
  }
 

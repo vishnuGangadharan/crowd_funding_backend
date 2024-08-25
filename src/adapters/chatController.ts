@@ -12,18 +12,20 @@ class ChatController {
     async sendMessage(req: Request, res: Response, next: NextFunction) {
         try {
             console.log('kittiyi');
-            if (req.files && 'file' in req.files) {
-                const file = req.files.file;
-                console.log("ssssss",file);
-                
-            }
-            console.log("ddddd",req.file);
+            console.log("llllllll",req.body);
+            console.log('222222222222222222222',req.file);
             
+            const file = req.file as Express.Multer.File;
+            let path: string | undefined;
+            if (file) {
+                path = file.path;
+            }
 
-            const {senderId, recipientId, message } = req.body;
-            console.log("seder",senderId, " receiver", recipientId,"message", message);
-            const response = await this.chatUseCase.sendMessage(senderId, recipientId, message);
-           if(response) res.status(200).json(response);
+            const { senderId, recipientId, message, fileType } = req.body;
+            console.log("seder", senderId, " receiver", recipientId, "message", message);
+            const response = await this.chatUseCase.sendMessage(senderId, recipientId, message, fileType, path || '');
+
+            if (response) res.status(200).json(response);
         } catch (error) {
             console.log(error);
             next(error);

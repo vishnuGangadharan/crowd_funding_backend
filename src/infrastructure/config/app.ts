@@ -43,51 +43,6 @@ app.use('/api/chat',chatRoutes)
 // original noo change in below
 
 
-// const io = new SocketIOServer(httpServer, {
-//   cors: {
-//     origin: 'http://localhost:3000',
-//     methods: ['GET', 'POST'],
-//     credentials: true, 
-//   },
-// });
-
-// io.on('connection', (socket) => {
-//   console.log('A user connected:', socket.id);
-
-//   socket.on('joinRoom', ({ userId, recipientId }) => {
-//     const room = [userId, recipientId].sort().join('-');
-//     socket.join(room);
-//     console.log(`User ${userId} joined room: ${room}`);
-//   });
-
-//   socket.on('sendMessage', async (message) => {
-//     const { senderId, recipientId, message: text } = message;
-
-//     const room = [senderId, recipientId].sort().join('-');
-//     console.log(`Sending message to room ${room}:`, message);
-
-//     try {
-//       // const save = await chatRepo.sendMessage(message); // Save the message to the database
-//       io.to(room).emit('receiveMessage', message); // Emit the message to the room
-//     } catch (error) {
-//       console.error('Error sending message:', error);
-//     }
-//   });
-
-//   socket.on('disconnect', () => {
-//     console.log('User disconnected:', socket.id);
-//   });
-// });
-
-
-//original no change on above
-
-
-
-
-
-
-
 const io = new SocketIOServer(httpServer, {
   cors: {
     origin: 'http://localhost:3000',
@@ -109,7 +64,7 @@ io.on('connection', (socket) => {
     const { senderId, recipientId, message: text } = message;
 
     const room = [senderId, recipientId].sort().join('-');
-    console.log(`Sending message to room ${room}:`, message);
+   // console.log(`Sending message to room ${room}:`, message);
 
     try {
       // const save = await chatRepo.sendMessage(message); // Save the message to the database
@@ -125,56 +80,9 @@ io.on('connection', (socket) => {
 });
 
 
-// const io = new SocketIOServer(httpServer, {
-//   cors: {
-//     origin: 'http://localhost:3000',
-//     methods: ['GET', 'POST'],
-//     credentials: true, 
-//   },
-// });
+//original no change on above
 
-// io.on('connection', (socket) => {
-//   console.log('A user connected:', socket.id);
 
-//   // Join a specific room
-//   socket.on('joinRoom', ({ userId, recipientId }) => {
-//     const room = [userId, recipientId].sort().join('-');
-//     socket.join(room);
-//     console.log(`User ${userId} joined room: ${room}`);
-//   });
 
-//   // Handle sending messages (including text and file messages)
-//   socket.on('sendMessage', async (message) => {
-//     const { senderId, recipientId, message: text, messageType, fileUrl } = message;
 
-//     const room = [senderId, recipientId].sort().join('-');
-//     console.log(`Sending message to room ${room}:`, message);
 
-//     try {
-//       // Save the message to the database if needed
-//       // const save = await chatRepo.sendMessage(message); // Uncomment this if you want to save the message
-
-//       // Emit the message to the room
-//       io.to(room).emit('receiveMessage', message);
-
-//       // Real-time update for images/files
-//       if (messageType !== 'text' && fileUrl) {
-//         // Emit the file message to the room
-//         io.to(room).emit('receiveMessage', {
-//           senderId,
-//           recipientId,
-//           message: text,
-//           messageType,
-//           fileUrl,
-//         });
-//       }
-//     } catch (error) {
-//       console.error('Error sending message:', error);
-//     }
-//   });
-
-//   // Handle user disconnection
-//   socket.on('disconnect', () => {
-//     console.log('User disconnected:', socket.id);
-//   });
-// });

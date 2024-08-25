@@ -9,7 +9,7 @@ export interface chatTypes {
   messageType?: 'text'| 'image' | 'video' | 'audio' | 'file';
   timestamp?: Date;
   status? : number;
-  mediaUrl?: string;
+  mediaUrl?: string | undefined;
 }
 
 
