@@ -183,5 +183,42 @@ async getFundRequest(){
 }
 
 
+async confirmFunding(id: string){
+    const confirmFunding = await this.adminRepository.confirmFunding(id)
+    if(confirmFunding){
+        const getProfit = await this.adminRepository.getProfit(id)    
+    
+    }
+
+}
+
+
+async getDashboard(){
+    const getDashboard = await this.adminRepository.getDashboard()
+    if(getDashboard){
+        return {
+            status:200,
+            data:{
+                status:'true',
+                data:getDashboard
+            }
+        }
+    }
+}
+
+
+ async getDashboardCounts(){
+    const getDashboardCounts = await this.adminRepository.getDashboardCounts()
+    if(getDashboardCounts){
+        return {
+            status:200,
+            data:{
+                status:'true',
+                data:getDashboardCounts
+            }
+        }
+    }
+ }
+
 }
 export default AdminUsecase

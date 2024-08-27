@@ -455,8 +455,8 @@ class UserUseCase {
     }
 
 
-    async allPost() {
-        const posts = await this.userRepository.getAllPost()
+    async allPost(searchTerm : string,skip: number,limit: number) {
+        const posts = await this.userRepository.getAllPost(searchTerm,skip,limit)
         if (posts) {
             return {
                 status: 200,

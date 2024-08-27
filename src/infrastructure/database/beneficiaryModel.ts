@@ -35,6 +35,7 @@ const beneficiarySchema : Schema = new Schema<beneficiary | Document>({
     address:{type:String, required:true},
     heading:{type:String, required:true},
     bio:{type:String, required:true},
+    fundRequestConfirmed:{type:Boolean, default:false},
     medicalDetails: {
         hospitalName: { type: String },
         hospitalPostalAddress: { type: String },

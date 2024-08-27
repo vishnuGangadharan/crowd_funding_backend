@@ -27,3 +27,13 @@ export interface walletType{
         amount: number;
     }[];
 }
+
+export interface profit{
+    totalProfit?: number;
+    adminId?: mongoose.Types.ObjectId | string;
+    transactions : {
+        beneficiary?: mongoose.Types.ObjectId | string;
+        amount?: number;
+        date?: Date;
+    };
+}

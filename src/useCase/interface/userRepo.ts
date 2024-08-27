@@ -5,7 +5,7 @@ import { comments } from "../../domain/comment";
 import { PostReport } from "../../domain/postReport";
 import { Donations } from "../../domain/donations";
 import { updates } from "../../domain/interface";
-
+import { totalPages } from "../../infrastructure/repository/userRepository";
 interface  UserRepo{
     findByEmail(email:string): Promise<User | null>;
     saveOTP(otp:number,email:string,name?:string,phone?:string,password?:string):Promise<any>;
@@ -20,7 +20,7 @@ interface  UserRepo{
     getPostDetailsById(userId : string) : Promise <beneficiary | null >
     createComment(comment: string, userId: string, postId: string, userName:string): Promise<comments>;
     getComments(id: string) : Promise<comments[]>;
-    getAllPost() : Promise<beneficiary[]>
+    getAllPost(searchTerm:string,skip:number,limit:number) : Promise<totalPages>
     updatePassword(password:string, userId:string):Promise <User| null>
     findPostById(postId:string):Promise < beneficiary | null>
     createReport(reportData : PostReport) : Promise <PostReport | boolean>

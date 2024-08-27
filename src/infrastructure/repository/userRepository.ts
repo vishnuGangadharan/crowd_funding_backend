@@ -125,15 +125,30 @@ class UserRepository implements UserRepo {
         return comments
     }
 
-    async getAllPost(): Promise<beneficiary[]> {
-        const posts = await beneficiaryModel.find(
-            { isApproved: "approved",
-              blocked :false
-             }
-        ).populate('fundraiser').exec();
-        console.log('post',posts);
-        
-        return posts;
+    async getAllPost(searchTerm:string,skip:number,limit:number): Promise<totalPages> {
+        const query:any = {
+            isApproved: "approved",
+            blocked: false,
+            fundRequestConfirmed: false,
+        };
+
+        if (searchTerm) {
+            query.$or = [
+                { name: { $regex: searchTerm, $options: 'i' } }, 
+                { heading: { $regex: searchTerm, $options: 'i' } }, 
+                { category : {$regex: searchTerm, $options: 'i'}}
+            ];
+        }
+        const posts = await beneficiaryModel.find(query)
+        .populate('fundraiser')
+        .skip(skip) 
+        .limit(limit)
+        .exec();
+
+        const totalCount = await beneficiaryModel.countDocuments(query);
+        const totalPages:number = Math.ceil(totalCount / limit);
+
+    return {data:posts,totalPages:totalPages};
     }
 
     async updatePassword(password: string, userId: string): Promise<User | null> {
@@ -289,6 +304,11 @@ class UserRepository implements UserRepo {
         }
     }
 
+}
+
+export interface totalPages{
+    totalPages: number,
+    data:beneficiary[]
 }
 
 export default UserRepository

@@ -257,10 +257,14 @@ class UserController {
     }
 
     async getAllPost(req: Request, res: Response, next: NextFunction) {
-        const posts = await this.userUseCase.allPost()
+        const { page, searchTerm } = req.query;
+        const limit = 3;
+        const skip = (Number(page) - 1) * limit;
+
+        const posts = await this.userUseCase.allPost(searchTerm as string,skip,limit);
 
         if (posts) {
-            return res.status(posts.status).json(posts.data)
+            return res.status(posts.status).json(posts.data);
         }
     }
 
@@ -308,7 +312,6 @@ class UserController {
 
 
 
-    //payment
     async setPayment(req: Request, res: Response, next: NextFunction) {
         try {
             const { amount, anonymousName, userId, beneficiaryId, method } = req.body;

@@ -19,6 +19,7 @@ routes.get('/all-reports', (req,res,next) => adminController.getAllReports(req,r
 routes.get('/post-details', (req,res,next)=> adminController.getPostDetails(req,res,next));
 routes.post('/block-post', (req,res,next) => adminController.blockPost(req,res,next))
 routes.get('/fund-request', (req,res,next) => adminController.getFundRequest(req,res,next))
-
-
+routes.post('/confirm-funding', (req,res,next) => adminController.confirmFunding(req,res,next))
+routes.get('/dashboard', (req,res,next) => adminController.getDashboard(req,res,next))
+// routes.get('/dashboard-counts', (req,res,next) => adminController.getDashboardCounts(req,res,next))
 export default routes

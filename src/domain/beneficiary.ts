@@ -54,5 +54,6 @@ interface beneficiary{
     bio?:string;
     blocked?:boolean;
     targetDateFinished:boolean;
+    fundRequestConfirmed?:boolean;
 }
 export default beneficiary

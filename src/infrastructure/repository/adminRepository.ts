@@ -1,10 +1,11 @@
 import beneficiary from "../../domain/beneficiary"
-import { Donations } from "../../domain/donations"
+import { counts, Donations } from "../../domain/donations"
 import { PostReport } from "../../domain/postReport"
 import AdminRepo from "../../useCase/interface/adminRepo"
 import beneficiaryModel from "../database/beneficiaryModel"
 import DonationModel from "../database/donationsModel"
 import PostReportModel from "../database/postReportModel"
+import profitModel from "../database/profitSchema"
 import UserModel from "../database/userModel"
 import walletModel from "../database/wallet"
 
@@ -106,13 +107,144 @@ class AdminRepository implements AdminRepo{
     async getFundRequest(): Promise<beneficiary[] | undefined> {
         try{
 
-            const getFundRequest = await beneficiaryModel.find({requestedAmount:true})
+            const getFundRequest = await beneficiaryModel.find({
+               $or: [
+                {requestedAmount:true},
+                {targetDateFinished: true},
+               ]
+
+            })
             return getFundRequest
 
         }catch(error){
             console.log(error)
         }
     }
+
+
+    async confirmFunding(id: string): Promise<boolean> {
+        const confirmFunding = await beneficiaryModel.findByIdAndUpdate(id,{fundRequestConfirmed:true},{new:true})
+
+        return confirmFunding ? true : false
+    }
+
+    async getProfit(id:string): Promise<boolean> {
+        const contributedAmount = await beneficiaryModel.findById(id)
+        const amount = contributedAmount?.contributedAmount || 0
+        
+            const profit = amount*(5/100)
+        
+
+        
+        let updateProfit = await profitModel.findOne();
+        if(!updateProfit){
+            updateProfit = new profitModel({
+                totalProfit:0,
+                transactions:[]
+            })
+        }
+
+        if (Array.isArray(updateProfit.transactions)) {
+            updateProfit.transactions.push({
+                beneficiary: id,
+                amount: amount 
+            })
+        }
+        if (updateProfit.totalProfit !== undefined) {
+            updateProfit.totalProfit += profit || 0
+        } else {
+            updateProfit.totalProfit = profit || 0
+        }
+
+   const saved = await updateProfit.save()
+        
+        return false
+    }
+
+    async getDashboard(): Promise<beneficiary[]> {
+          const beneficiaries = await beneficiaryModel.find({
+            fundRequestConfirmed: { $ne: true },
+            isApproved: 'approved',
+            blocked: false
+        })
+        .populate('fundraiser')
+        .exec();
+      
+        return beneficiaries;
+    }
+
+
+    async getDashboardCounts(): Promise<counts> {
+        const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+
+       
+        const result = await beneficiaryModel.aggregate([
+            {
+              $facet: {
+                totalPosts: [
+                  {
+                    $match: {
+                      blocked: { $ne: true },
+                      fundRequestConfirmed: { $ne: true },
+                    }
+                  },
+                  { $count: 'total' }
+                ],
+                postsThisMonth: [
+                  {
+                    $match: {
+                      blocked: { $ne: true },
+                      fundRequestConfirmed: { $ne: true },
+                      createdAt: { $gte: startOfMonth },
+                    }
+                  },
+                  { $count: 'total' }
+                ],
+                completedPosts: [
+                  {
+                    $match: {
+                      fundRequestConfirmed: true
+                    }
+                  },
+                  { $count: 'total' }
+                ],
+                allPosts: [
+                    {
+                       $match: {
+                        fundRequestConfirmed: { $ne: true },
+                        isApproved: 'approved',
+                        blocked: false
+                       } 
+                    }
+                ]
+              }
+            }
+          ]);
+
+          const totalProfit = await profitModel.findOne({});
+
+
+          
+        const totalPosts = result[0]?.totalPosts[0]?.total || 0;
+        const postsThisMonth = result[0]?.postsThisMonth[0]?.total || 0;
+        const completedPosts = result[0]?.completedPosts[0]?.total || 0;
+        const allPosts = result[0]?.allPosts || [];
+        let counts: counts = {
+            totalPosts,
+            postsThisMonth,
+            completedPosts,
+            totalProfit: totalProfit || undefined,
+            beneficiary: allPosts
+
+        };
+     
+        console.log('Counts:', totalProfit);
+        
+        
+        return counts;
+        
+    }
+
 
 }
 export default AdminRepository

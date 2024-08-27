@@ -136,6 +136,43 @@ class AdminController {
             next(error);
         }
     }
+
+    async confirmFunding(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.body;
+            console.log('id',id);
+            
+            const response = await this.adminUseCase.confirmFunding(id);
+            // if(response){
+            //     return res.status(response.status).json(response.data)
+            // }
+        }catch(error){
+            next(error);
+        }
+    }
+
+
+    // async getDashboard(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //        const response = await this.adminUseCase.getDashboard()
+    //         if(response){
+    //             return res.status(response.status).json(response.data)
+    //         }
+    //     }catch(error){
+    //         next(error);
+    //     }
+    // }
+
+    async getDashboard(req: Request, res: Response, next: NextFunction) {
+        try {
+          const response = await this.adminUseCase.getDashboardCounts()
+          if(response){
+            return res.status(response.status).json(response.data)
+          }
+        }catch(error){
+            next(error);
+        }
+    }
    
 }
 
