@@ -125,13 +125,16 @@ class UserRepository implements UserRepo {
         return comments
     }
 
-    async getAllPost(searchTerm:string,skip:number,limit:number): Promise<totalPages> {
+    async getAllPost(searchTerm:string,skip:number,limit:number, category:string): Promise<totalPages> {
         const query:any = {
             isApproved: "approved",
             blocked: false,
             fundRequestConfirmed: false,
         };
 
+        if(category){
+            query.category = category;
+        }
         if (searchTerm) {
             query.$or = [
                 { name: { $regex: searchTerm, $options: 'i' } }, 

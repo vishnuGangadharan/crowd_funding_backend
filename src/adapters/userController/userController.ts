@@ -257,11 +257,13 @@ class UserController {
     }
 
     async getAllPost(req: Request, res: Response, next: NextFunction) {
-        const { page, searchTerm } = req.query;
+        const { page, searchTerm, category } = req.query;
         const limit = 3;
         const skip = (Number(page) - 1) * limit;
+        console.log('category', category);
+        
 
-        const posts = await this.userUseCase.allPost(searchTerm as string,skip,limit);
+        const posts = await this.userUseCase.allPost(searchTerm as string,skip,limit, category as string);
 
         if (posts) {
             return res.status(posts.status).json(posts.data);

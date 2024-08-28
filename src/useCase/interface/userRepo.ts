@@ -20,7 +20,7 @@ interface  UserRepo{
     getPostDetailsById(userId : string) : Promise <beneficiary | null >
     createComment(comment: string, userId: string, postId: string, userName:string): Promise<comments>;
     getComments(id: string) : Promise<comments[]>;
-    getAllPost(searchTerm:string,skip:number,limit:number) : Promise<totalPages>
+    getAllPost(searchTerm:string,skip:number,limit:number, category:string) : Promise<totalPages>
     updatePassword(password:string, userId:string):Promise <User| null>
     findPostById(postId:string):Promise < beneficiary | null>
     createReport(reportData : PostReport) : Promise <PostReport | boolean>

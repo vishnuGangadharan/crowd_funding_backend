@@ -10,6 +10,7 @@ export interface chatTypes {
   timestamp?: Date;
   status? : number;
   mediaUrl?: string | undefined;
+  read?: boolean;
 }
 
 

@@ -24,11 +24,15 @@ const chatSchema: Schema = new Schema({
     mediaUrl : {
         type:String,
         required: function(this: Document & { messageType: 'text' | 'image' | 'video' | 'audio' | 'file', mediaUrl: string }) {
-            return this.messageType !== 'text'; // Required if messageType is not 'text'
+            return this.messageType !== 'text'; 
         },
+    },
+    read: {
+        type: Boolean,
+        default: false 
     }
+   
 },{timestamps: true})
-
 
 
 const messageModel : Model<chatTypes> = model<chatTypes>('Chat',chatSchema);
