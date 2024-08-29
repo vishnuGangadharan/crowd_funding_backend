@@ -13,10 +13,12 @@ const app = express()
 export const httpServer  = http.createServer(app) 
 import ChatRepository from '../repository/chatRepository'
 import messageModel from '../database/chatModel'
+import dotenv from "dotenv"
+dotenv.config();
 
 const chatRepo = new  ChatRepository()
 const corsOptions = {
-    origin: 'http://localhost:3000', 
+    origin: process.env.CORS, 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, 
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -24,8 +26,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 app.use(cookieParser())
-app.use(express.json())//used to parse incomming req with json payload, transform json to js object which can access by req.body
-app.use(express.urlencoded({ extended: true}))  //forms related
+app.use(express.json())
+app.use(express.urlencoded({ extended: true}))  
 app.use(morg('dev'))
 
 
@@ -39,7 +41,7 @@ app.use('/api/chat',chatRoutes)
 
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: process.env.CORS,
     methods: ['GET', 'POST'],
     credentials: true, 
   },
@@ -71,6 +73,7 @@ io.on('connection', (socket) => {
   socket.on('markMessagesAsRead', async ({recipientId, senderId}) => {
     try {
       console.log('Received markMessagesAsRead event with recipientId:', recipientId);
+      console.log("herrr");
       
       // Update all unread messages from senderId to recipientId to read:true
       await messageModel.updateMany(

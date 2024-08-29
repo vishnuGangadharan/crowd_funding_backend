@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const chatUseCase_1 = __importDefault(require("../../useCase/chatUseCase"));
+const chatController_1 = __importDefault(require("../../adapters/chatController"));
+const chatRepository_1 = __importDefault(require("../repository/chatRepository"));
+const multer_1 = __importDefault(require("../services/multer"));
+const cloudinary_1 = __importDefault(require("../services/cloudinary"));
+const cloudinary = new cloudinary_1.default();
+const chatRepository = new chatRepository_1.default();
+const useCase = new chatUseCase_1.default(chatRepository, cloudinary);
+const chatController = new chatController_1.default(useCase);
+const chatRoutes = express_1.default.Router();
+chatRoutes.post('/send-message', multer_1.default.single('fileUrl'), (req, res, next) => chatController.sendMessage(req, res, next));
+chatRoutes.get('/get-message', (req, res, next) => chatController.getMessage(req, res, next));
+chatRoutes.get('/all-chatted-users', (req, res, next) => chatController.chattedUsers(req, res, next));
+exports.default = chatRoutes;
