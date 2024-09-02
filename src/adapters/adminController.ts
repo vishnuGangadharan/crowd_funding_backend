@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import AdminUseCase from '../useCase/adminUsecase';
+import { log } from 'console';
 
 
 class AdminController {
@@ -49,7 +50,10 @@ class AdminController {
 
     async getRequest(req: Request, res: Response, next: NextFunction) {
         try {
-            const request = await this.adminUseCase.getRequest();
+            const {currentPage} = req.query 
+            const limit = 5
+            const skip = (Number(currentPage) -1 ) * limit
+            const request = await this.adminUseCase.getRequest(limit,skip);
             if (request) {
                 return res.status(request.status).json(request);
             } else {
@@ -65,9 +69,7 @@ class AdminController {
     async postApproval(req : Request, res: Response, next: NextFunction){
         try{
           const {postId , status} = req.body;
-          console.log(req.body); 
             const response = await this.adminUseCase.approvalPost(postId, status)
-            console.log("ddd",response);
             if(response){
                 return res.status(response.status).json(response.data)
             }
@@ -81,7 +83,6 @@ class AdminController {
 
     async getAllReports(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("getall post");
             
             const allReports = await this.adminUseCase.allReports();
             if (allReports && allReports.status) {
@@ -128,7 +129,10 @@ class AdminController {
 
     async getFundRequest(req: Request, res: Response, next: NextFunction) {
         try {
-            const response = await this.adminUseCase.getFundRequest()
+            const {currentPage} = req.query
+            const limit = 2
+            const skip = (Number(currentPage) -1 ) * limit
+            const response = await this.adminUseCase.getFundRequest(limit,skip);
             if(response){
                 return res.status(response.status).json(response.data)
             }
@@ -139,9 +143,7 @@ class AdminController {
 
     async confirmFunding(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.body;
-            console.log('id',id);
-            
+            const { id } = req.body;            
             const response = await this.adminUseCase.confirmFunding(id);
             // if(response){
             //     return res.status(response.status).json(response.data)
@@ -151,17 +153,6 @@ class AdminController {
         }
     }
 
-
-    // async getDashboard(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //        const response = await this.adminUseCase.getDashboard()
-    //         if(response){
-    //             return res.status(response.status).json(response.data)
-    //         }
-    //     }catch(error){
-    //         next(error);
-    //     }
-    // }
 
     async getDashboard(req: Request, res: Response, next: NextFunction) {
         try {

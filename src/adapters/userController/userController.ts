@@ -260,7 +260,6 @@ class UserController {
         const { page, searchTerm, category } = req.query;
         const limit = 3;
         const skip = (Number(page) - 1) * limit;
-        console.log('category', category);
         
 
         const posts = await this.userUseCase.allPost(searchTerm as string,skip,limit, category as string);

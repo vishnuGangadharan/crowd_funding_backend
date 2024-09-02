@@ -70,9 +70,9 @@ class AdminUsecase {
 }
 
 
-async getRequest() {
+async getRequest(limit:number,skip: number) {
     try {
-        const request = await this.adminRepository.getRequest()
+        const request = await this.adminRepository.getRequest(limit,skip)
         if(request){
             return {
                 status:200,
@@ -169,8 +169,8 @@ async blockPost(postId:string){
 }
 
 
-async getFundRequest(){
-    const response = await this.adminRepository.getFundRequest()
+async getFundRequest(limit:number,skip:number){
+    const response = await this.adminRepository.getFundRequest(limit,skip)
     if(response){
         return {
             status:200,

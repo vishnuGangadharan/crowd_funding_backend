@@ -55,5 +55,7 @@ interface beneficiary{
     blocked?:boolean;
     targetDateFinished:boolean;
     fundRequestConfirmed?:boolean;
+    totalPages?:number;
 }
 export default beneficiary
+
