@@ -16,7 +16,7 @@ dotenv.config();
 
 const chatRepo = new ChatRepository()
 const corsOptions = {
-  origin: process.env.CORS,
+  origin:  ['https://crowd-funding-frontend-phi.vercel.app', 'http://localhost:3000'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
