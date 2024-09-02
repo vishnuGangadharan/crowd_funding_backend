@@ -79,7 +79,8 @@ class UserController {
             const user = await this.userUseCase.login(email, password);
             if (user) {
 
-                return res.status(user.status).cookie('jwt', user.data.token).json(user.data);
+                return res.status(user.status).json(user.data);
+               // cookie('jwt', user.data.token).json(user.data);
             }
         }
         catch (error) {
