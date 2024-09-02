@@ -39,7 +39,7 @@ app.use('/api/chat', chatRoutes)
 
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: process.env.CORS,
+    origin: ['https://crowd-funding-frontend-phi.vercel.app/', 'http://localhost:3000'],
     methods: ['GET', 'POST'],
     credentials: true,
   },
