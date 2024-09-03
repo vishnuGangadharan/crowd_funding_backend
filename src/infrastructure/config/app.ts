@@ -5,7 +5,7 @@ import userRoutes from '../routes/userRoutes'
 import adminRoutes from '../routes/adminRoutes'
 import chatRoutes from '../routes/chatRoutes'
 import cors from 'cors'
-import morg from 'morgan'
+import morgan from 'morgan'
 import { Server as SocketIOServer } from 'socket.io';
 const app = express()
 export const httpServer = http.createServer(app)
@@ -16,7 +16,7 @@ dotenv.config();
 
 const chatRepo = new ChatRepository()
 const corsOptions = {
-  origin:  ['https://crowd-funding-frontend-phi.vercel.app/', 'http://localhost:3000'],
+  origin:  ['https://crowd-funding-frontend-phi.vercel.app', 'http://localhost:3000'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -26,7 +26,7 @@ app.use(cors(corsOptions))
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(morg('dev'))
+app.use(morgan('dev'))
 
 
 app.use('/api/user', userRoutes)
@@ -39,7 +39,7 @@ app.use('/api/chat', chatRoutes)
 
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: ['https://crowd-funding-frontend-phi.vercel.app/', 'http://localhost:3000'],
+    origin: ['https://crowd-funding-frontend-phi.vercel.app', 'http://localhost:3000'],
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -84,7 +84,6 @@ io.on('connection', (socket) => {
   socket.on('markMessagesAsRead', async ({ recipientId, senderId }) => {
     try {
       console.log('Received markMessagesAsRead event with recipientId:', recipientId);
-      console.log('seeennn');
       
       await messageModel.updateMany(
         { recipientId, senderId, read: false },
