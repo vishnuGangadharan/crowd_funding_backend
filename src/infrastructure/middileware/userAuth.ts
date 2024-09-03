@@ -20,7 +20,10 @@ export const userAuth = async (req: Request, res: Response, next: NextFunction) 
         }
 
         const userId = decodeToken.userId;
+        console.log('auth',userId);
+        
         const user = await UserModel.findById(userId)
+        console.log('auth',user);
         
         if(!user){
             return res.status(400).json({ message: "User not found"})

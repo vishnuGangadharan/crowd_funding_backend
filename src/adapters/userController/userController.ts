@@ -76,6 +76,8 @@ class UserController {
     async login(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password } = req.body;
+            console.log("email", email, "password", password);
+            
             const user = await this.userUseCase.login(email, password);
             if (user) {
 
