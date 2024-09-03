@@ -45,6 +45,14 @@ const io = new SocketIOServer(httpServer, {
   },
 });
 
+type Room = string;
+type UserId = string;
+type RoomUsers = {
+  [key: Room]: Set<UserId>;
+};
+
+const roomUsers: RoomUsers = {}
+
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
@@ -52,6 +60,11 @@ io.on('connection', (socket) => {
     const room = [userId, recipientId].sort().join('-');
     socket.join(room);
     console.log(`User ${userId} joined room: ${room}`);
+
+    if(!roomUsers[room]){
+      roomUsers[room] = new Set()
+    }
+    roomUsers[room].add(userId)
   });
 
   socket.on('typing', ({ senderId, recipientId }) => {
@@ -74,8 +87,12 @@ io.on('connection', (socket) => {
 
     try {
       io.to(room).emit('receiveMessage', message);
-      const unreadCount = await messageModel.countDocuments({ recipientId, senderId, read: false });
-      io.to(room).emit('updateUnreadCount', { senderId, unreadCount: unreadCount+1 })
+      const isRecipientInRoom = roomUsers[room] && roomUsers[room].has(recipientId);
+      if(!isRecipientInRoom){
+
+        const unreadCount = await messageModel.countDocuments({ recipientId, senderId, read: false });
+        io.to(room).emit('updateUnreadCount', { senderId, unreadCount: unreadCount+1 })
+      }
     } catch (error) {
       console.error('Error sending message:', error);
     }
@@ -99,5 +116,13 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
+    for (const room in roomUsers) {
+      roomUsers[room].delete(socket.id);
+
+      // If the room is empty, remove the room entry
+      if (roomUsers[room].size === 0) {
+        delete roomUsers[room];
+      }
+    }
   });
 });
