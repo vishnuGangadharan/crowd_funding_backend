@@ -379,7 +379,6 @@ class UserController {
 
     async updateBeneficiary(req: Request, res: Response, next: NextFunction) {
         try {
-            console.log("heree", req.body);
 
             const { content, postId } = req.body;
             const video = (req.files as { [fieldname: string]: Express.Multer.File[] })?.videosUpdate;
@@ -395,7 +394,6 @@ class UserController {
             let imagePath: string[] = [];
             if (image) {
                 imagePath = image.map((file) => file.path);
-                console.log("imagePath", imagePath);
             }
             const response = await this.userUseCase.updateBeneficiary(content, videoPath, imagePath, postId);
             if (response) {
@@ -423,7 +421,6 @@ class UserController {
     async getWallet(req: Request, res: Response, next: NextFunction) {
         try {
             const userId = req.query.userId as string;
-            console.log('userId', userId);
             
             const response = await this.userUseCase.getWallet(userId);
             if(response){

@@ -595,7 +595,7 @@ class UserUseCase {
         
     
         const saveDonation = await this.userRepository.saveDonation(data)
-        const updateContribution = await this.userRepository.updateContribution(data.amount as number, data.beneficiaryId as any)
+        const updateContribution = await this.userRepository.updateContribution(data.amount as number, data.beneficiaryId as any, data.userId as string, data.method as string)
         console.log("saved");
 
         if (session) {
@@ -611,10 +611,9 @@ class UserUseCase {
 
 
     async walletPayment(data: Donations) {
+        
         const checkWallet = await this.userRepository.checkWallet(data.amount as number , data.userId as string)
-        if(!checkWallet){
-            console.log('noooo');
-            
+        if(!checkWallet){            
             return {
                 status : 400,
                 data : {
@@ -639,7 +638,7 @@ class UserUseCase {
         
     
         const saveDonation = await this.userRepository.saveDonation(data)
-        const updateContribution = await this.userRepository.updateContribution(data.amount as number, data.beneficiaryId as any)
+        const updateContribution = await this.userRepository.updateContribution(data.amount as number, data.beneficiaryId as any, data.userId as string ,data.method as string)
         console.log("saved");
         return {
             status : 200,

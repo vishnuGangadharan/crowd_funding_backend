@@ -26,7 +26,7 @@ interface  UserRepo{
     createReport(reportData : PostReport) : Promise <PostReport | boolean>
     saveDonation(donationData:Donations):Promise<Donations>;
     getDonations(userId:string):Promise<Donations[]>;
-    updateContribution(amount:number , beneficiaryId:string):Promise<boolean>
+    updateContribution(amount:number , beneficiaryId:string, userId: string, method:string):Promise<boolean>
     findReport(userId:string): Promise<PostReport | null>
     updateBeneficiary(content:string,video:string[],image:string[],postId:string):Promise<boolean>
     getStatusUpdates(postId:string): Promise<updates[] | null>

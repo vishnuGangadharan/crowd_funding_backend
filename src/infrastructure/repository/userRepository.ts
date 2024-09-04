@@ -195,7 +195,6 @@ class UserRepository implements UserRepo {
                     targetAmount: reachedTarget.amount || 0,
                     amountRaised: reachedTarget.contributedAmount || 0
                 };
-                console.log('dddddd',data);
                 
 
                 return data;
@@ -212,9 +211,7 @@ class UserRepository implements UserRepo {
     }
 
     async checkWallet(amount:number, userId: string): Promise<boolean | null> {
-        const wallet = await walletModel.findOne({userId})
-        console.log("dddddddd",wallet);
-        
+        const wallet = await walletModel.findOne({userId})        
         return wallet && wallet.balance >= amount
     }
 
@@ -226,11 +223,13 @@ class UserRepository implements UserRepo {
         return donations;
     }
 
-    async updateContribution(amount: number, beneficiaryId: string): Promise<boolean> {
+    async updateContribution(amount: number, beneficiaryId: string, userId:string, method:string): Promise<boolean> {
         try {
+          console.log('isside wallet',method);
           
             const numericAmount = Number(amount);
-
+            console.log("amount",numericAmount);
+            
             if (isNaN(numericAmount)) {
                 throw new Error('Invalid amount value');
             }
@@ -239,6 +238,25 @@ class UserRepository implements UserRepo {
                 { _id: beneficiaryId },
                 { $inc: { contributedAmount: numericAmount } }
             );
+            if(method === "wallet"){
+                console.log('insidee walletkkk');;
+                console.log('userId',userId);
+                
+                const wallet = await walletModel.findOne({userId})
+               
+                
+                if (wallet && wallet.balance !== undefined) {
+                    wallet.balance -= numericAmount;
+                    wallet.transactions.push({
+                        beneficiary: beneficiaryId,
+                        amount: numericAmount,
+                        type: 'debit',
+                        description: 'Contribution to beneficiary'
+                    })
+                    await wallet.save();
+                }
+                
+            }
 
             return updateAmount.modifiedCount > 0;
         } catch (error) {
