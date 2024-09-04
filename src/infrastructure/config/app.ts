@@ -16,7 +16,7 @@ dotenv.config();
 
 const chatRepo = new ChatRepository()
 const corsOptions = {
-  origin:  ['https://crowd-funding-frontend-phi.vercel.app', 'http://localhost:3000'],
+  origin:  ['https://crowd-funding-hope-springs.vercel.app', 'http://localhost:3000'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -39,7 +39,7 @@ app.use('/api/chat', chatRoutes)
 
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: ['https://crowd-funding-frontend-phi.vercel.app', 'http://localhost:3000'],
+    origin: ['https://crowd-funding-hope-springs.vercel.app', 'http://localhost:3000'],
     methods: ['GET', 'POST'],
     credentials: true,
   },
