@@ -74,7 +74,10 @@ io.on('connection', (socket) => {
     const room = [senderId, recipientId].sort().join('-');
 
     try {
+      
       io.to(room).emit('receiveMessage', message);
+      console.log('Received message:', message);
+     
       const unreadCount = await messageModel.countDocuments({ recipientId, senderId, read: false });
       io.to(room).emit('updateUnreadCount', { senderId, unreadCount: unreadCount+1 })
     } catch (error) {
@@ -90,7 +93,7 @@ io.on('connection', (socket) => {
         { recipientId, senderId, read: false },
         { $set: { read: true } }
       );
-
+      
       const room = [senderId, recipientId].sort().join('-');
       io.to(room).emit('updateUnreadCount', { senderId, unreadCount: 0 });
     } catch (error) {
@@ -102,3 +105,4 @@ io.on('connection', (socket) => {
     console.log('User disconnected:', socket.id);
   });
 });
+
