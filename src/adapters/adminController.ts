@@ -145,9 +145,7 @@ class AdminController {
         try {
             const { id } = req.body;            
             const response = await this.adminUseCase.confirmFunding(id);
-            // if(response){
-            //     return res.status(response.status).json(response.data)
-            // }
+           
         }catch(error){
             next(error);
         }

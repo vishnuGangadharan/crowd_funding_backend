@@ -79,16 +79,28 @@ class UserUseCase {
 
 
         let findOtp = await this.userRepository.findOtpByEmail(email);
-
-        if (!findOtp) {
+        console.log('findOtp', findOtp);
+        if (findOtp.otp !== otp) {
+            console.log('jjjjjj');
+            
             return {
                 status: 400,
                 data: {
                     status: false,
-                    message: "invalid or expired otp"
+                    message: 'invalid or expired otp'
                 }
             }
         }
+        // if (!findOtp) {
+        //     return {
+        //         status: 400,
+        //         data: {
+        //             status: false,
+        //             message: "invalid or expired otp"
+        //         }
+        //     }
+        // }
+       
 
 
         let data: { name: string, email: string, phone?: string, password?: string } = {

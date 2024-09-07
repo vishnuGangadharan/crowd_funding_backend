@@ -124,11 +124,13 @@ class UserController {
 
     async verifyOtpBeneficiary(req: Request, res: Response, next: NextFunction) {
         try {
-
+            console.log("req.body", req.body);
+            
             const { otp, email } = req.body;
             let verify = await this.userUseCase.verifyOtp(email, otp)
-
-            return res.status(verify.status).json(verify.message)
+            console.log('verify', verify);
+            
+            return res.status(verify.status).json(verify.data)
 
 
         } catch (error) {

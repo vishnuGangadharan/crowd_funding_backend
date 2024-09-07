@@ -40,7 +40,8 @@ class UserRepository implements UserRepo {
 
     async findOtpByEmail(email: string): Promise<any> {
         const otpData = await OTPModel.findOne({ email }).sort({ otpGeneratedAt: -1 })
-
+        console.log("otpData", otpData,email);
+        
         return otpData
     }
 
