@@ -588,9 +588,9 @@ class UserUseCase {
                 },
             ],
             mode: "payment",
-            success_url: `http://localhost:3000/postdetails/${data.beneficiaryId}`,
-            cancel_url: `http://localhost:3000/postdetails/${data.beneficiaryId}`,
-            // customer_email: email,
+            success_url: `https://crowd-funding-hope-springs.vercel.app/postdetails/${data.beneficiaryId}`,
+            cancel_url: `https://crowd-funding-hope-springs.vercel.app/postdetails/${data.beneficiaryId}`,
+            
             billing_address_collection: "auto"
         });
         const amountCheck = await this.userRepository.amountReached(data.amount as number, data.beneficiaryId as any)
