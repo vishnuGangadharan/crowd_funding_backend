@@ -42,6 +42,10 @@ const userSchema:Schema = new Schema<User | Document>({
         type: Boolean, 
         default: false
       },
+      lastSeen: {
+        type : Date,
+        default: null
+    }
 },{ timestamps: true });
 
 const UserModel:Model<User&Document>=mongoose.model<User & Document>("User", userSchema);

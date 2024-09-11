@@ -12,6 +12,7 @@ import mongoose from "mongoose";
     isFundraiser: boolean;
     isAdmin:boolean;
     isGoogle:boolean;
+    lastSeen:Date;
 }
 
 

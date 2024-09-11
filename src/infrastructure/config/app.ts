@@ -12,6 +12,8 @@ export const httpServer = http.createServer(app)
 import ChatRepository from '../repository/chatRepository'
 import messageModel from '../database/chatModel'
 import dotenv from "dotenv"
+import UserModel from '../database/userModel'
+const mongoose = require('mongoose'); 
 dotenv.config();
 
 const chatRepo = new ChatRepository()
@@ -45,9 +47,49 @@ const io = new SocketIOServer(httpServer, {
   },
 });
 
+type User = {
+  userId: string;
+  socketId: string;
+};
+
+
+let onlineUsers: User[] = [];
+
 
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
+
+  socket.on('addNewUser', (userId ,recipientId) =>{
+    console.log('room', userId, recipientId);
+    const room = [userId, recipientId].sort().join('-');
+
+    !onlineUsers.some((user) => user.userId === userId) && 
+    onlineUsers.push({
+      userId,
+      socketId: socket.id
+    })
+    console.log('onlineUsers', onlineUsers);
+    io.emit('getOnlineUsers', onlineUsers);
+  })
+
+  socket.on('userLeftChat', async(userId, time) => {
+    console.log(`User left chat: ${userId} at time ${time}`);
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      console.error('Invalid userId:', userId);
+      return;
+  }
+  console.log('userId:..................', userId);
+  io.emit('userLastSeen',{ userId, lastSeen: time});
+  
+  const objectId = new mongoose.Types.ObjectId(userId);
+
+      chatRepo.updateLastSeen(objectId)
+
+      onlineUsers = onlineUsers.filter((user) => user.userId !== userId);
+    console.log('onlineUsers after user left chat:', onlineUsers);
+    io.emit('getOnlineUsers', onlineUsers);
+  });
+  
 
   socket.on('joinRoom', ({ userId, recipientId }) => {
     const room = [userId, recipientId].sort().join('-');
@@ -102,7 +144,13 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
+    const user = onlineUsers.find((user) => user.socketId == socket.id)
+
+      console.log('logout user is ...................',user?.userId);
     console.log('User disconnected:', socket.id);
+    onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id)
+    console.log('onlineUsers after disconnect:', onlineUsers);
+    io.emit('getOnlineUsers', onlineUsers);
   });
 });
 

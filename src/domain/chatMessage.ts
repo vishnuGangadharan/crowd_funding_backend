@@ -11,6 +11,7 @@ export interface chatTypes {
   status? : number;
   mediaUrl?: string | undefined;
   read?: boolean;
+  
 }
 
 
@@ -22,4 +23,10 @@ export interface PopulatedUser {
 export interface PopulatedChat {
   senderId?: PopulatedUser;
   recipientId?: PopulatedUser;
+}
+
+
+export interface lastSeen{
+  _id?: string;
+  lastSeen?: Date;
 }

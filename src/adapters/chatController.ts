@@ -59,6 +59,15 @@ class ChatController {
         }catch(error){
             next(error)
         }
+    } 
+
+    async lastSeen(req:Request, res: Response , next: NextFunction) {
+        try{
+            const response = await this.chatUseCase.lastSeen()
+            if(response) res.status(response.status).json(response.data)
+        }catch(error){
+            next(error)
+        }
     }
 
 }

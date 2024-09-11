@@ -30,7 +30,8 @@ const chatSchema: Schema = new Schema({
     read: {
         type: Boolean,
         default: false 
-    }
+    },
+   
    
 },{timestamps: true})
 

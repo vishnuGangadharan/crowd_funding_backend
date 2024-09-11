@@ -81,6 +81,24 @@ class ChatUseCase {
         }
     }
 
+    async lastSeen(){
+        try{
+            const  lastSeen = await this.chatRepository.lastSeen()
+            if(lastSeen){
+                return {
+                    status:200,
+                    data:{
+                        status:true,
+                        data:lastSeen
+                    }
+                }
+            }
+        }catch(error){
+            console.log(error);
+
+        }
+    }
+
 }
 
 export default ChatUseCase

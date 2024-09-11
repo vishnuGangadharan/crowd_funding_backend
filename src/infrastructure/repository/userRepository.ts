@@ -145,6 +145,7 @@ class UserRepository implements UserRepo {
         }
         const posts = await beneficiaryModel.find(query)
         .populate('fundraiser')
+        .sort({ createdAt: -1 }) 
         .skip(skip) 
         .limit(limit)
         .exec();
