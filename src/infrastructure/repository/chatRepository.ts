@@ -76,6 +76,7 @@ class ChatRepository implements ChatRepo {
   }
 
   async lastSeen(): Promise<User[] | null> {
+    
     const lastSeen = await UserModel.find({}, { _id: 1, lastSeen: 1 }).lean();
 
     console.log('lastSeen', lastSeen);

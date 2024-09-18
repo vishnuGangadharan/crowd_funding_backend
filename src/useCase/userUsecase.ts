@@ -285,10 +285,12 @@ class UserUseCase {
 
             if (user) {
                 const updateProfile = await this.userRepository.editProfile(data)
+                
                 if (updateProfile) {
                     return {
                         status: 200,
                         data: {
+                            data: updateProfile,
                             status: true,
                             message: "user updated successfully"
                         }
@@ -439,11 +441,14 @@ class UserUseCase {
         const user = await this.userRepository.findById(userId)
         const userName = user?.name
         const saveComment = await this.userRepository.createComment(comment, userId, postId, userName as string)
+        console.log('commetntttt',saveComment);
+        
         if (saveComment) {
             return {
                 status: 200,
                 data: {
                     status: true,
+                    data : saveComment,
                     message: "Comment Added Successfully"
                 }
             }

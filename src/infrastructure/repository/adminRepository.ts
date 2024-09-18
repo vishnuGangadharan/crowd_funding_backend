@@ -2,6 +2,7 @@ import beneficiary from "../../domain/beneficiary"
 import { counts, Donations } from "../../domain/donations"
 import { paginationBeneficiary } from "../../domain/interface"
 import { PostReport } from "../../domain/postReport"
+import User from "../../domain/users"
 import AdminRepo from "../../useCase/interface/adminRepo"
 import beneficiaryModel from "../database/beneficiaryModel"
 import DonationModel from "../database/donationsModel"
@@ -26,9 +27,9 @@ class AdminRepository implements AdminRepo {
         const total = await UserModel.countDocuments(query)
         return { users, total }
     }
-    async findByIdAndUpdate(id: string, status: boolean): Promise<boolean> {
+    async findByIdAndUpdate(id: string, status: boolean): Promise<User | null> {
         const user = await UserModel.findByIdAndUpdate(id, { isBlocked: status }, { new: true })
-        return user ? true : false
+        return user 
     }
 
     async getRequest(limit: number, skip: number): Promise<paginationBeneficiary> {

@@ -91,10 +91,12 @@ class UserRepository implements UserRepo {
 
     async editProfile(user: { name?: string, email?: string, phone?: string, profilePicture?: string }): Promise<any> {
 
-        const updateUser = await UserModel.updateOne(
+        const updateUser = await UserModel.findOneAndUpdate(
             { email: user.email },
-            { $set: { name: user.name, phone: user.phone, email: user.email, profilePicture: user.profilePicture } })
-        return updateUser.modifiedCount > 0
+            { $set: { name: user.name, phone: user.phone, email: user.email, profilePicture: user.profilePicture } },
+            { new: true }
+        )
+        return updateUser
     }
 
 

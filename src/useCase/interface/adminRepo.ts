@@ -6,7 +6,7 @@ import { counts } from "../../domain/donations";
 import { paginationBeneficiary } from "../../domain/interface";
 interface AdminRepo{
     findAllUsers(page:number, limit:number, searchTerm: string):Promise<{ users: User[], total: number }>;  
-    findByIdAndUpdate(id:string,status:boolean):Promise<boolean>;
+    findByIdAndUpdate(id:string,status:boolean):Promise<User | null>;
     getRequest(limit:number,skip:number):Promise<paginationBeneficiary>;
     updateStatus(postId:string, status:string): Promise<beneficiary | null>
     getallReports():Promise < PostReport[] | null>;
