@@ -21,5 +21,4 @@ routes.post('/block-post', (req,res,next) => adminController.blockPost(req,res,n
 routes.get('/fund-request', (req,res,next) => adminController.getFundRequest(req,res,next))
 routes.post('/confirm-funding', (req,res,next) => adminController.confirmFunding(req,res,next))
 routes.get('/dashboard', (req,res,next) => adminController.getDashboard(req,res,next))
-// routes.get('/dashboard-counts', (req,res,next) => adminController.getDashboardCounts(req,res,next))
 export default routes

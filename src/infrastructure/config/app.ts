@@ -12,13 +12,12 @@ export const httpServer = http.createServer(app)
 import ChatRepository from '../repository/chatRepository'
 import messageModel from '../database/chatModel'
 import dotenv from "dotenv"
-import UserModel from '../database/userModel'
 const mongoose = require('mongoose'); 
 dotenv.config();
 
 const chatRepo = new ChatRepository()
 const corsOptions = {
-  origin:  ['https://crowd-funding-hope-springs.vercel.app', 'http://localhost:3000'],
+  origin:  process.env.CORS_VERSAL,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -41,7 +40,7 @@ app.use('/api/chat', chatRoutes)
 
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin: ['https://crowd-funding-hope-springs.vercel.app', 'http://localhost:3000'],
+    origin:  "http://localhost:3001",
     methods: ['GET', 'POST'],
     credentials: true,
   },

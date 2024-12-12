@@ -10,8 +10,7 @@ import { PasswordData } from "../domain/interface";
 import { PostReport } from "../domain/postReport";
 import Stripe from "stripe";
 import { Donations } from "../domain/donations";
-import messageModel from "../infrastructure/database/chatModel";
-import { ObjectId } from "mongoose";
+
 
 class UserUseCase {
     private userRepository: UserRepository;
@@ -76,8 +75,6 @@ class UserUseCase {
 
 
     async verifyOtp(email: string, otp: number) {
-
-
         let findOtp = await this.userRepository.findOtpByEmail(email);
         console.log('findOtp', findOtp);
         if (findOtp.otp !== otp) {
@@ -91,15 +88,6 @@ class UserUseCase {
                 }
             }
         }
-        // if (!findOtp) {
-        //     return {
-        //         status: 400,
-        //         data: {
-        //             status: false,
-        //             message: "invalid or expired otp"
-        //         }
-        //     }
-        // }
        
 
 
@@ -112,7 +100,7 @@ class UserUseCase {
 
         let now = new Date().getTime()
         const otpGeneratedAt = new Date(findOtp.otpGeneratedAt).getTime()
-        const otpExpiration = 2 * 60 * 1000; //2mints            
+        const otpExpiration = 2 * 60 * 1000;           
         if (now - otpGeneratedAt > otpExpiration) {
 
             await this.userRepository.deleteOtpByEmail(email)

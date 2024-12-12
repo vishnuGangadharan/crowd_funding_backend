@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import UserUseCase from '../../useCase/userUsecase';
 import User from '../../domain/users';
-import beneficiary from '../../domain/beneficiary';
 import { PasswordData } from '../../domain/interface';
 import { Donations } from '../../domain/donations';
 
