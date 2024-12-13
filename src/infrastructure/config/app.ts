@@ -40,7 +40,7 @@ app.use('/api/chat', chatRoutes)
 
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin:  "http://localhost:3001",
+    origin:  process.env.CORS_VERSAL,
     methods: ['GET', 'POST'],
     credentials: true,
   },
