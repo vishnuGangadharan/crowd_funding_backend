@@ -16,8 +16,10 @@ const mongoose = require('mongoose');
 dotenv.config();
 
 const chatRepo = new ChatRepository()
+console.log( process.env.CORS_LOCAL);
+
 const corsOptions = {
-  origin:  process.env.CORS_VERSAL,
+  origin:  'https://crowd-funding-hope-springs.vercel.app/',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -40,7 +42,7 @@ app.use('/api/chat', chatRoutes)
 
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin:  process.env.CORS_VERSAL,
+    origin:  process.env.CORS_LOCAL,
     methods: ['GET', 'POST'],
     credentials: true,
   },
