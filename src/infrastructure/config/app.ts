@@ -16,10 +16,10 @@ const mongoose = require('mongoose');
 dotenv.config();
 
 const chatRepo = new ChatRepository()
-console.log( process.env.CORS_LOCAL);
+console.log( process.env.CORS_VERSAL);
 
 const corsOptions = {
-  origin: process.env.CORS_VERSAL,
+  origin: ['https://crowd-funding-hope-springs.vercel.app'],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
