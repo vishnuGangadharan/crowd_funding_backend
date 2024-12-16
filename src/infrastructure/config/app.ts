@@ -19,7 +19,7 @@ const chatRepo = new ChatRepository()
 console.log( process.env.CORS_LOCAL);
 
 const corsOptions = {
-  origin: ['https://crowd-funding-hope-springs.vercel.app'],
+  origin: process.env.CORS_VERSAL,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -27,7 +27,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions));
-
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
