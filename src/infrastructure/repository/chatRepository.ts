@@ -79,7 +79,7 @@ class ChatRepository implements ChatRepo {
     
     const lastSeen = await UserModel.find({}, { _id: 1, lastSeen: 1 }).lean();
 
-    console.log('lastSeen', lastSeen);
+    // console.log('lastSeen', lastSeen);
 
     return lastSeen;
   }

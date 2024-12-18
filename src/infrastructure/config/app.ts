@@ -43,7 +43,7 @@ app.use('/api/chat', chatRoutes)
 
 const io = new SocketIOServer(httpServer, {
   cors: {
-    origin:  ['https://crowd-funding-hope-springs.vercel.app'],
+    origin: ['https://crowd-funding-hope-springs.vercel.app'],
     methods: ['GET', 'POST'],
     credentials: true,
   },
